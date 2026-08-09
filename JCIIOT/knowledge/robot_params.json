@@ -110,8 +110,8 @@
   },
   "grasp_policy": {
     "_comment": "BC 抓取策略参数 —— 控制基于行为克隆的抓取执行",
-    "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
-    "checkpoint_fallback_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+    "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
+    "checkpoint_fallback_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
     "eval_steps": 360,
     "post_hold_steps": 5,
     "initial_view_steps": 5,
@@ -120,19 +120,19 @@
     "record_frame_interval": 5,
     "scene_overrides": {
       "FactorySorting3_3FO3ERRPH7X9": {
-        "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+        "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
         "backend_source": "scene_bc_input_6",
         "eval_steps": 500
       },
       "FactorySorting5_3FO3ERTPXEUT": {
-        "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+        "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
         "backend_source": "scene_bc_aux_input_1",
         "policy_yaw": 3.141592653589793,
-        "eval_steps": 120,
-        "allow_attachment_recovery": true
+        "eval_steps": 480,
+        "post_hold_steps": 20
       },
       "FactorySorting7_3FO3ERFKY9RN": {
-        "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+        "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
         "backend_source": "scene_bc_input_2",
         "device": "cuda",
         "policy_yaw": 3.141592653589793,
@@ -142,7 +142,7 @@
         "record_frame_interval": 50,
         "object_overrides": {
           "white_tote_b01_left_back": {
-            "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+            "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
             "backend_source": "scene_bc_input_1_back",
             "device": "cuda",
             "policy_yaw": -1.5707963267948966,
@@ -150,7 +150,7 @@
             "post_hold_steps": 60
           },
           "white_tote_b01_left_center": {
-            "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+            "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
             "backend_source": "scene_bc_input_1_center",
             "device": "cuda",
             "policy_yaw": 3.141592653589793,
@@ -158,7 +158,7 @@
             "post_hold_steps": 20
           },
           "white_tote_b01_left_front": {
-            "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+            "checkpoint_path": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
             "backend_source": "scene_bc_input_1_front",
             "device": "cuda",
             "policy_yaw": 3.141592653589793,

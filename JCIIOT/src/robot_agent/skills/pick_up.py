@@ -274,53 +274,6 @@ class PickUpSkill(BaseSkill):
         self._backend = backend
         self._scene = scene_context
         self._successfully_picked_objects: set[str] = set()
-        self._allow_attachment_recovery = False
-
-    def _recover_transport_attachment(
-        self,
-        *,
-        object_name: str,
-        source: str,
-    ) -> bool:
-        """Recover a corrected-asset grasp after the BC/contact gate fails.
-
-        This path is opt-in per scene. It uses robosuite's existing transport
-        attachment and records the method explicitly; it is never enabled for
-        the six targets whose unified BC branch passes the physical lift gate.
-        """
-
-        import numpy as np
-        from robosuite.environments.factory_sorting.transport_attachment import (
-            capture_transport_attachment,
-            sync_transport_attachment,
-        )
-
-        nav_env = self._backend.env
-        body_id = getattr(nav_env, "obj_body_id", {}).get(object_name)
-        if body_id is None:
-            raise RuntimeError(f"attachment recovery object not found: {object_name}")
-        attachment = capture_transport_attachment(nav_env, object_name)
-        # Hold the object in front of the base at a safe transport height.
-        # The relative vector is expressed in the robot base frame.
-        attachment["relative_xy"] = np.array([0.78, 0.0], dtype=float)
-        attachment["world_z"] = 1.45
-        sync_transport_attachment(nav_env)
-        self._backend._held_crate_name = object_name
-        self._backend._held_crate_body_id = int(body_id)
-        self._backend._record_trajectory_frame()
-        self._backend._mark_trajectory_event(
-            "grasp_end",
-            object_name=object_name,
-            source=source,
-            success=True,
-            method="transport_attachment_recovery",
-        )
-        logger.warning(
-            "used disclosed transport-attachment recovery for %s at %s",
-            object_name,
-            source,
-        )
-        return True
 
     def _configure_scene_policy(
         self,
@@ -336,7 +289,6 @@ class PickUpSkill(BaseSkill):
         """
 
         self._policy_yaw_override = None
-        self._allow_attachment_recovery = False
         params_path = Path(__file__).resolve().parents[3] / "knowledge" / "robot_params.json"
         params = json.loads(params_path.read_text(encoding="utf-8"))
         scene_name = str(getattr(self._backend, "_env_name", ""))
@@ -361,9 +313,6 @@ class PickUpSkill(BaseSkill):
 
         if "policy_yaw" in override:
             self._policy_yaw_override = float(override["policy_yaw"])
-        self._allow_attachment_recovery = bool(
-            override.get("allow_attachment_recovery", False)
-        )
 
         checkpoint_value = str(override.get("checkpoint_path", "")).strip()
         if not checkpoint_value:
@@ -524,19 +473,6 @@ class PickUpSkill(BaseSkill):
                     object_name=object_name,
                 )
                 _restore_other_materials(self._backend, preserved_materials)
-                recovery_used = False
-                if not ok and self._allow_attachment_recovery and object_name:
-                    ok = self._recover_transport_attachment(
-                        object_name=object_name,
-                        source=target,
-                    )
-                    recovery_used = ok
-                    _normalize_grasp_event_source(
-                        self._backend,
-                        backend_source=backend_source,
-                        station_source=target,
-                        object_name=object_name,
-                    )
                 resolved_object = getattr(self._backend, "_held_crate_name", None) or object_name
                 if ok and resolved_object:
                     self._successfully_picked_objects.add(str(resolved_object))
@@ -551,11 +487,7 @@ class PickUpSkill(BaseSkill):
                         "object_name": resolved_object,
                         "requested_object_name": requested_object_name,
                         "grasp_initial_base_pose": initial_base_pose,
-                        "method": (
-                            "physics+attachment_recovery"
-                            if recovery_used
-                            else "physics"
-                        ),
+                        "method": "physics",
                         "ok": ok,
                     },
                 )

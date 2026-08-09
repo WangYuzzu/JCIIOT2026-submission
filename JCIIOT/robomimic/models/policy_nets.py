@@ -6,7 +6,6 @@ samples, or distributions as outputs. Note that actions
 are assumed to lie in [-1, 1], and most networks will have a final
 tanh activation to help ensure this range.
 """
-import textwrap
 import numpy as np
 from collections import OrderedDict
 
@@ -17,8 +16,7 @@ import torch.distributions as D
 
 import robomimic.utils.tensor_utils as TensorUtils
 from robomimic.models.base_nets import Module
-from robomimic.models.transformers import GPT_Backbone
-from robomimic.models.obs_nets import MIMO_MLP, RNN_MIMO_MLP, MIMO_Transformer, ObservationDecoder
+from robomimic.models.obs_nets import MIMO_MLP, RNN_MIMO_MLP, MIMO_Transformer
 from robomimic.models.vae_nets import VAE
 from robomimic.models.distributions import TanhWrappedDistribution
 
@@ -1126,6 +1124,67 @@ class TransformerActorNetwork(MIMO_Transformer):
     def _to_string(self):
         """Info to pretty print."""
         return "action_dim={}".format(self.ac_dim)
+
+
+class TaskHeadTransformerActorNetwork(TransformerActorNetwork):
+    """Shared Transformer with one action head per explicit task condition.
+
+    The task one-hot is still encoded with the observations, but independent
+    final projections prevent geometrically different grasps from averaging
+    their action outputs in the last layer. This remains one jointly trained
+    policy and one checkpoint; only the small output projection is branched.
+    """
+
+    def __init__(
+        self,
+        *args,
+        task_condition_key="bc_task_id",
+        num_task_heads=7,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.task_condition_key = task_condition_key
+        self.num_task_heads = int(num_task_heads)
+        self.nets["task_heads"] = nn.ModuleList(
+            nn.Linear(self.transformer_embed_dim, self.ac_dim)
+            for _ in range(self.num_task_heads)
+        )
+
+    def forward(self, obs_dict, actions=None, goal_dict=None):
+        if self.task_condition_key not in obs_dict:
+            raise KeyError(
+                f"missing task condition observation: {self.task_condition_key}"
+            )
+        if self._is_goal_conditioned:
+            assert goal_dict is not None
+            mod = list(obs_dict.keys())[0]
+            goal_dict = TensorUtils.unsqueeze_expand_at(
+                goal_dict, size=obs_dict[mod].shape[1], dim=1
+            )
+
+        grouped_inputs = dict(obs=obs_dict, goal=goal_dict)
+        transformer_inputs = TensorUtils.time_distributed(
+            grouped_inputs, self.nets["encoder"], inputs_as_kwargs=True
+        )
+        transformer_embeddings = self.input_embedding(transformer_inputs)
+        features = self.nets["transformer"].forward(transformer_embeddings)
+        head_outputs = torch.stack(
+            [head(features) for head in self.nets["task_heads"]], dim=-2
+        )
+        task_weights = obs_dict[self.task_condition_key]
+        if task_weights.shape[-1] != self.num_task_heads:
+            raise ValueError(
+                f"expected {self.num_task_heads} task weights, got "
+                f"{task_weights.shape[-1]}"
+            )
+        selected = torch.sum(head_outputs * task_weights.unsqueeze(-1), dim=-2)
+        return torch.tanh(selected)
+
+    def _to_string(self):
+        return (
+            f"action_dim={self.ac_dim}, task_heads={self.num_task_heads}, "
+            f"task_condition_key={self.task_condition_key}"
+        )
 
 
 class TransformerGMMActorNetwork(TransformerActorNetwork):

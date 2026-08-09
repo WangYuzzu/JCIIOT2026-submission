@@ -2,3 +2,6 @@
 __pycache__/
 *.py[cod]
 *.egg-info/
+
+# Local BC collection and training scratch space (datasets are reproducible)
+JCIIOT/team_submission/training_work/

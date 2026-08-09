@@ -8,6 +8,8 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
+
 
 APP_ROOT = Path(__file__).resolve().parents[3]
 for _path in (APP_ROOT, APP_ROOT / "robosuite"):
@@ -19,6 +21,22 @@ from robosuite.environments.factory_sorting import (  # noqa: E402
     load_factory_sorting_evalization as evaluation,
 )
 from robot_agent.skills.bc_task_conditioning import maybe_condition_policy  # noqa: E402
+
+
+class _RecordingPolicy:
+    """Transparent policy wrapper that retains rollout actions for diagnosis."""
+
+    def __init__(self, policy) -> None:
+        self.policy = policy
+        self.actions: list[list[float]] = []
+
+    def __call__(self, *, ob):
+        action = np.asarray(self.policy(ob=ob), dtype=float)
+        self.actions.append(action.reshape(-1).tolist())
+        return action
+
+    def __getattr__(self, name):
+        return getattr(self.policy, name)
 
 
 def parse_args() -> argparse.Namespace:
@@ -90,6 +108,7 @@ def main() -> int:
         checkpoint_dict,
         env_args.object_name,
     )
+    policy = _RecordingPolicy(policy)
     env = evaluation.make_eval_env(
         env_args,
         config=config,
@@ -111,6 +130,30 @@ def main() -> int:
             initial_view_steps=0,
             render=False,
         )
+        raw_env = evaluation.base_robosuite_env(env)
+        robot = raw_env.robots[0]
+        fingerpad_positions = {}
+        for arm in ("right", "left"):
+            for group, geom_names in robot.gripper[arm].important_geoms.items():
+                if "fingerpad" not in group:
+                    continue
+                fingerpad_positions[f"{arm}.{group}"] = [
+                    raw_env.sim.data.geom_xpos[
+                        raw_env.sim.model.geom_name2id(name)
+                    ].round(6).tolist()
+                    for name in geom_names
+                ]
+        current_obs = raw_env._get_observations(force_update=True)
+        grasp_diagnostics = {
+            "fingerpad_positions": fingerpad_positions,
+            "left_gripper_qpos": current_obs["robot0_left_gripper_qpos"].tolist(),
+            "right_gripper_qpos": current_obs["robot0_right_gripper_qpos"].tolist(),
+            "action_samples": {
+                str(index): policy.actions[index]
+                for index in range(0, len(policy.actions), 40)
+            },
+            "final_action": policy.actions[-1] if policy.actions else None,
+        }
         lift = lift_after_grasp.lift_grasped_object(
             env=env,
             object_name=env_args.object_name,
@@ -127,6 +170,7 @@ def main() -> int:
             "base_ori": env_args.robot_base_ori,
             "eval_steps": args.eval_steps,
             "grasp": grasp,
+            "grasp_diagnostics": grasp_diagnostics,
             "lift": lift,
             "success": bool(grasp.get("success") and lift.get("success")),
         }

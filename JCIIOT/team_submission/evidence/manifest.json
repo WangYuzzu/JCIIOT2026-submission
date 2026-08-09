@@ -22,10 +22,10 @@
       "max_score": 10,
       "trajectory": "evidence/L1/trajectory.json",
       "result": "evidence/L1/result.json",
-      "source_trajectory": "recordings/FactorySorting1_3FO3ERFHISEM/trajectory_20260809_161144_SUBMISSION_L1_OK.json",
-      "trajectory_bytes": 689088,
-      "trajectory_sha256": "a039b114534b0b582f82d041b59fecc9a329d2a1e2b63819645f5f4335cb56f7",
-      "result_sha256": "309f246073d7e4b8489cb14b9abd83445deb4daf131217a473d8c7c062d37fe9"
+      "source_trajectory": "recordings/FactorySorting1_3FO3ERFHISEM/trajectory_20260809_232357_SUBMISSION_L1_OK.json",
+      "trajectory_bytes": 692974,
+      "trajectory_sha256": "ee6545dbd36383863c88d5ee7b4d2ce2975c48cba4878c00812750559efdbcc3",
+      "result_sha256": "a1eadb73b667ba18227a42610f6979c18d89e98272ffe5f1ee2a76b30c2bf6e2"
     },
     {
       "level": "L2",
@@ -46,10 +46,10 @@
       "max_score": 15,
       "trajectory": "evidence/L2/trajectory.json",
       "result": "evidence/L2/result.json",
-      "source_trajectory": "recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_161334_SUBMISSION_L2_OK.json",
-      "trajectory_bytes": 791516,
-      "trajectory_sha256": "57f09bf3061dd7908bcae933da26b87d6f64b9024cb06e6feb5bf2789f716e13",
-      "result_sha256": "e9705212b1025024a26863e13573fe914b67125f5c615048a277bdef1dc46d6f"
+      "source_trajectory": "recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_232555_SUBMISSION_L2_OK.json",
+      "trajectory_bytes": 791685,
+      "trajectory_sha256": "4f6ddbd18b935e4b90e3ce3a9cc2d9afa17b1c7822ce4c556c9871e2704a31fa",
+      "result_sha256": "a3e82313383d3beb95821edc63694440f895cd4fcaed7d9fd8c7321bf0efbabc"
     },
     {
       "level": "L3",
@@ -71,10 +71,10 @@
       "max_score": 20,
       "trajectory": "evidence/L3/trajectory.json",
       "result": "evidence/L3/result.json",
-      "source_trajectory": "recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_L3_AUG2_OK.json",
-      "trajectory_bytes": 842614,
-      "trajectory_sha256": "df7ab7bed4907c344b6a37dc8eb99f50b64d1d1e8e720a931fb7ac6fbbee2325",
-      "result_sha256": "c99af5a5b2b72357188b94f9bd702d21a92a28ec4b377e40ae72256e76ffb242"
+      "source_trajectory": "recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_232111_SUBMISSION_L3_OK.json",
+      "trajectory_bytes": 1139258,
+      "trajectory_sha256": "5e419dd4f02993c685d88fda9f1b9083215ac357a1ff972194040b8258db921c",
+      "result_sha256": "c6f915a4fc221a28c4810e00ca7c98ed0df7f0590f602523296a4526eb10069d"
     },
     {
       "level": "L4",
@@ -95,10 +95,10 @@
       "max_score": 25,
       "trajectory": "evidence/L4/trajectory.json",
       "result": "evidence/L4/result.json",
-      "source_trajectory": "recordings/FactorySorting7_3FO3ERFKY9RN/trajectory_20260809_161537_SUBMISSION_L4_OK.json",
-      "trajectory_bytes": 1344236,
-      "trajectory_sha256": "19dbe6eb28349561db06989546a15c9d5141047ed69bceac6db0058e146d051b",
-      "result_sha256": "f8f1eb9b062fa3b267ce16712450c44b929a44625a02befbd75882e75ca36c83"
+      "source_trajectory": "recordings/FactorySorting7_3FO3ERFKY9RN/trajectory_20260809_232802_SUBMISSION_L4_OK.json",
+      "trajectory_bytes": 1362526,
+      "trajectory_sha256": "634b081495aa74d48be1c4c025470d7ed1f90805f6d529962877554ad9719b0e",
+      "result_sha256": "dc9bad600a09da12b5dff7631605e5262b46b341711ce44326a258a383d22d18"
     },
     {
       "level": "L5",
@@ -121,10 +121,10 @@
       "max_score": 30,
       "trajectory": "evidence/L5/trajectory.json",
       "result": "evidence/L5/result.json",
-      "source_trajectory": "recordings/FactorySorting9_3FO3ERT2C5FP/trajectory_20260809_L5_AUG3_OK.json",
-      "trajectory_bytes": 3412791,
-      "trajectory_sha256": "3f9fb5d100c487cdb1c9f3fb7a684d3914cc15bef6816d0bde88609d347903a9",
-      "result_sha256": "bff6eed5532b37611d713af59326738265958b7caa5bc4a859a38b22c1088db3"
+      "source_trajectory": "recordings/FactorySorting9_3FO3ERT2C5FP/trajectory_20260809_233054_SUBMISSION_L5_OK.json",
+      "trajectory_bytes": 3413958,
+      "trajectory_sha256": "c7ab228c25b59e68ffe4b94a58e27b74a69f6bd57b34a08bdc294f917d466c7e",
+      "result_sha256": "1928ddbf8bf0e7d20b0ec19607ad46dfacf6452936db2f326c11017bf15a5c91"
     }
   ]
 }

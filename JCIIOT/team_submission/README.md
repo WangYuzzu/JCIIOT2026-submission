@@ -13,7 +13,7 @@ The prohibited files remain unchanged relative to that official commit:
 ## Result at a glance
 
 Final official-condition replay audit: **100/100** (L1 10, L2 15, L3 20,
-L4 25, L5 30), 2,263 saved frames and zero collision-marked frames. The
+L4 25, L5 30), 2,349 saved frames and zero collision-marked frames. The
 canonical evidence is under [`evidence/`](evidence/) and the five rendered
 demonstrations are under [`demos/`](demos/).
 
@@ -43,7 +43,7 @@ team_submission/
 ├── demos/                           # GIF/MP4 demonstrations
 ├── knowledge/                       # generated SOP Markdown + provenance
 └── models/
-    └── jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth
+    └── jciiot_unified_task_heads_v16_deploy.pth
 ```
 
 Training/data preparation code is under
@@ -139,26 +139,26 @@ to the old station.
 ## Retrain the unified BC checkpoint
 
 The final checkpoint is a low-dimensional Transformer BC trained with
-robomimic from 336 successful episodes / 182,062 time steps covering seven
-pre-correction grasp branches. All seven branches share one 7-D task condition
-and one 3.17 M-parameter actor. Collection, timestep conversion, balanced
-multi-task preparation, recovery fine-tuning, export, and strict grasp/lift
-evaluation commands are preserved under `src/robot_agent/workflows/`.
+robomimic. It has one shared 3.17 M-parameter Transformer and seven small
+task-conditioned linear action heads (35,980 parameters total), all stored in
+one 12.9 MB checkpoint. The shared model was trained on 336 successful full
+demonstrations plus 144 contact-closing correction windows. L2, corrected L3,
+and L5-center heads were then calibrated independently while the shared trunk
+and other heads were frozen.
 
-The 9 August L3 asset changed orientation after training. Its old BC branch is
-still invoked first, but cannot establish the official double-finger physical
-contact because the corrected blue tote's authored grasp markers are rotated
-relative to Tiago's finger closing axis. Only for this corrected branch, a
-clearly recorded `transport_attachment_recovery` is enabled after BC/contact/
-lift failure. L1, L2, L4, and all three L5 targets require and pass genuine BC
-contact plus lift verification. This limitation is disclosed in the report and
-trajectory event metadata.
+The 9 August L3 correction is fully included in the training data: 48/48
+successful expert demonstrations use `blue_tote_b01_near_right` at the
+collision-free deployment pose. The selected epoch passes genuine bilateral
+finger contact and physical lift verification. No failed-grasp attachment
+recovery exists in the final runtime. All seven branches pass the same strict
+contact-and-lift evaluator, and all five final task trajectories have zero
+collision-marked frames.
 
 ## Integrity
 
 ```text
-checkpoint bytes: 38,173,419
-SHA-256: dd41174cdd1ed40d70f309024283326f0732de1aaeb0e3275b1573c13c824c5f
+checkpoint bytes: 12,928,025
+SHA-256: f8c7feb8047ad62f4e1e01f0e67886a0aa41f87781d486ae90e23164c37a7a5d
 ```
 
 The submission checkpoint is stored as a normal Git blob (below GitHub's

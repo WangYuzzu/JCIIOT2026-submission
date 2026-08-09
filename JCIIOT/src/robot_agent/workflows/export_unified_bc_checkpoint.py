@@ -28,11 +28,14 @@ def main() -> int:
     checkpoint = torch.load(args.input, map_location="cpu", weights_only=False)
 
     shape_metadata = checkpoint.get("shape_metadata")
-    if not isinstance(shape_metadata, list) or not shape_metadata:
-        raise ValueError("expected non-empty shape_metadata list")
-    if not _all_equal(shape_metadata):
-        raise ValueError("source datasets do not share one observation/action schema")
-    checkpoint["shape_metadata"] = shape_metadata[0]
+    if isinstance(shape_metadata, list):
+        if not shape_metadata:
+            raise ValueError("expected non-empty shape_metadata list")
+        if not _all_equal(shape_metadata):
+            raise ValueError("source datasets do not share one observation/action schema")
+        checkpoint["shape_metadata"] = shape_metadata[0]
+    elif not isinstance(shape_metadata, dict):
+        raise ValueError("expected shape_metadata dictionary or non-empty list")
 
     # Environment creation in the competition path is driven by its explicit
     # scene argument, not checkpoint metadata. Retaining one representative

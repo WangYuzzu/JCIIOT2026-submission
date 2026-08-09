@@ -5,11 +5,9 @@ from collections import OrderedDict
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.distributions as D
 
 import robomimic.models.base_nets as BaseNets
-import robomimic.models.obs_nets as ObsNets
 import robomimic.models.policy_nets as PolicyNets
 import robomimic.models.vae_nets as VAENets
 import robomimic.utils.loss_utils as LossUtils
@@ -685,15 +683,39 @@ class BC_Transformer(BC):
         assert self.algo_config.transformer.enabled
 
         self.nets = nn.ModuleDict()
-        self.nets["policy"] = PolicyNets.TransformerActorNetwork(
+        # ``actor_layer_dims=[7]`` is a schema-compatible opt-in used by the
+        # competition task-conditioned checkpoint. Standard robomimic BC
+        # configs retain the original shared action head and remain loadable.
+        actor_layer_dims = list(self.algo_config.actor_layer_dims)
+        policy_class = (
+            PolicyNets.TaskHeadTransformerActorNetwork
+            if actor_layer_dims and actor_layer_dims[0] == 7
+            else PolicyNets.TransformerActorNetwork
+        )
+        policy_kwargs = {}
+        if policy_class is PolicyNets.TaskHeadTransformerActorNetwork:
+            policy_kwargs.update(
+                task_condition_key="bc_task_id",
+                num_task_heads=7,
+            )
+        self.nets["policy"] = policy_class(
             obs_shapes=self.obs_shapes,
             goal_shapes=self.goal_shapes,
             ac_dim=self.ac_dim,
             encoder_kwargs=ObsUtils.obs_encoder_kwargs_from_config(self.obs_config.encoder),
             **BaseNets.transformer_args_from_config(self.algo_config.transformer),
+            **policy_kwargs,
         )
         self._set_params_from_config()
         self.nets = self.nets.float().to(self.device)
+        if len(actor_layer_dims) == 2 and actor_layer_dims[0] == 7:
+            train_head = int(actor_layer_dims[1])
+            if not 0 <= train_head < 7:
+                raise ValueError(f"invalid task head index: {train_head}")
+            for parameter in self.nets["policy"].parameters():
+                parameter.requires_grad_(False)
+            for parameter in self.nets["policy"].nets["task_heads"][train_head].parameters():
+                parameter.requires_grad_(True)
         
     def _set_params_from_config(self):
         """

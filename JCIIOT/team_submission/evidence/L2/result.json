@@ -4,12 +4,12 @@
   "env_name": "FactorySorting3_3FO3ERRPH7X9",
   "status": "OK",
   "success": true,
-  "trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_161334_SUBMISSION_L2_OK.json",
-  "running_trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_161334_SUBMISSION_L2_RUNNING.json",
+  "trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_232555_SUBMISSION_L2_OK.json",
+  "running_trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_232555_SUBMISSION_L2_RUNNING.json",
   "result": {
     "skill_name": "composed",
     "success": true,
-    "message": "按照L2跨线搬运SOP，规划了标准的4步搬运流程：move(input_6) → pick_up(green_tote_b01_upper) → move(output_4) → place_down(output_4)，每步超时300秒且不重试，符合单物体搬运和安全约束。",
+    "message": "按照L2跨线搬运SOP，完成从input_6到output_4的单物体运输，全程遵守300s超时且不重试的约束",
     "steps": [
       {
         "skill": "move",
@@ -68,17 +68,16 @@
           ]
         },
         "preconditions": [
-          "底盘静止于起始位置",
-          "夹爪为空"
+          "底盘静止于起始位置"
         ],
-        "expected_output": "机器人到达input_6停止点，底盘停稳",
+        "expected_output": "机器人到达input_6停止点",
         "timeout": 3000.0,
         "retries": 0,
         "attempts": 1
       },
       {
         "skill": "pick_up",
-        "description": "在input_6抓取绿色储物箱green_tote_b01_upper",
+        "description": "在input_6抓取green_tote_b01_upper",
         "success": true,
         "message": "Physics grasp OK: input_6",
         "payload": {
@@ -130,10 +129,9 @@
         },
         "preconditions": [
           "夹爪为空",
-          "底盘已停稳于input_6",
-          "物体在可达范围内"
+          "底盘已停稳"
         ],
-        "expected_output": "成功抓取green_tote_b01_upper并提升至安全高度150mm",
+        "expected_output": "成功抓取物体并提升至安全高度",
         "timeout": 3000.0,
         "retries": 0,
         "attempts": 1
@@ -169,19 +167,19 @@
           },
           "final_base_pose": {
             "xy": [
-              -1.005273033659963,
-              -7.310551197737805
+              -1.005273074025552,
+              -7.310551342443852
             ],
-            "yaw": -1.5688180923461914,
+            "yaw": -1.5686780214309692,
             "robot_base_pos": [
-              -1.005273033659963,
-              -7.310551197737805,
+              -1.005273074025552,
+              -7.310551342443852,
               0.0
             ],
             "robot_base_ori": [
               0.0,
               0.0,
-              -1.5688180923461914
+              -1.5686780214309692
             ]
           },
           "waypoints": 80,
@@ -191,17 +189,16 @@
           "target": "output_4"
         },
         "preconditions": [
-          "夹爪已持握物体",
-          "抓取提升已确认成功"
+          "夹爪已持握物体"
         ],
-        "expected_output": "机器人到达output_4停止点，底盘停稳",
+        "expected_output": "机器人到达output_4停止点",
         "timeout": 3000.0,
         "retries": 0,
         "attempts": 1
       },
       {
         "skill": "place_down",
-        "description": "在output_4放下绿色储物箱",
+        "description": "在output_4放下物体",
         "success": true,
         "message": "Physics place OK: output_4",
         "payload": {
@@ -214,8 +211,7 @@
           "target": "output_4"
         },
         "preconditions": [
-          "底盘已停稳于output_4放置点",
-          "目标桌面无障碍物"
+          "底盘已停稳于放置点"
         ],
         "expected_output": "物体放置成功，夹爪释放并收回",
         "timeout": 3000.0,
@@ -225,13 +221,13 @@
     ],
     "thinking": {
       "version": "2.0",
-      "task_understanding": "将一个绿色储物箱从Pick Station 1（input_6）搬运到Place Station 3（output_4），数量为1。",
-      "selection_reason": "根据L2任务SOP和当前场景物体映射，需依次执行移动到取货点、抓取指定物体、移动到放置点、放下物体四个步骤，严格遵守单次搬运和300秒超时约束。",
+      "task_understanding": "将一个绿边储物箱从Pick Station 1（input_6）搬运到Place Station 3（output_4）",
+      "selection_reason": "根据L2任务SOP和当前场景映射，需依次执行移动到取货点、抓取目标物体、移动到放置点、放下物体四个步骤",
       "execution_steps": [
         "导航至取货工位input_6接近点",
-        "在input_6抓取绿色储物箱green_tote_b01_upper",
+        "在input_6抓取green_tote_b01_upper",
         "携带物体导航至放置工位output_4",
-        "在output_4放下绿色储物箱"
+        "在output_4放下物体"
       ],
       "plan_summary": [
         {
@@ -240,7 +236,7 @@
         },
         {
           "skill": "pick_up",
-          "description": "在input_6抓取绿色储物箱green_tote_b01_upper"
+          "description": "在input_6抓取green_tote_b01_upper"
         },
         {
           "skill": "move",
@@ -248,18 +244,18 @@
         },
         {
           "skill": "place_down",
-          "description": "在output_4放下绿色储物箱"
+          "description": "在output_4放下物体"
         }
       ],
-      "result_explanation": "按照L2跨线搬运SOP，规划了标准的4步搬运流程：move(input_6) → pick_up(green_tote_b01_upper) → move(output_4) → place_down(output_4)，每步超时300秒且不重试，符合单物体搬运和安全约束。"
+      "result_explanation": "按照L2跨线搬运SOP，完成从input_6到output_4的单物体运输，全程遵守300s超时且不重试的约束"
     },
-    "planner_raw": "{\"understanding\":\"将一个绿色储物箱从Pick Station 1（input_6）搬运到Place Station 3（output_4），数量为1。\",\"reason\":\"根据L2任务SOP和当前场景物体映射，需依次执行移动到取货点、抓取指定物体、移动到放置点、放下物体四个步骤，严格遵守单次搬运和300秒超时约束。\",\"plan\":[{\"skill_name\":\"move\",\"description\":\"导航至取货工位input_6接近点\",\"inputs\":{\"target\":\"input_6\"},\"preconditions\":[\"底盘静止于起始位置\",\"夹爪为空\"],\"expected_output\":\"机器人到达input_6停止点，底盘停稳\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"pick_up\",\"description\":\"在input_6抓取绿色储物箱green_tote_b01_upper\",\"inputs\":{\"target\":\"input_6\",\"object_name\":\"green_tote_b01_upper\"},\"preconditions\":[\"夹爪为空\",\"底盘已停稳于input_6\",\"物体在可达范围内\"],\"expected_output\":\"成功抓取green_tote_b01_upper并提升至安全高度150mm\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"move\",\"description\":\"携带物体导航至放置工位output_4\",\"inputs\":{\"target\":\"output_4\"},\"preconditions\":[\"夹爪已持握物体\",\"抓取提升已确认成功\"],\"expected_output\":\"机器人到达output_4停止点，底盘停稳\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"place_down\",\"description\":\"在output_4放下绿色储物箱\",\"inputs\":{\"target\":\"output_4\"},\"preconditions\":[\"底盘已停稳于output_4放置点\",\"目标桌面无障碍物\"],\"expected_output\":\"物体放置成功，夹爪释放并收回\",\"timeout\":300,\"retries\":0}],\"explanation\":\"按照L2跨线搬运SOP，规划了标准的4步搬运流程：move(input_6) → pick_up(green_tote_b01_upper) → move(output_4) → place_down(output_4)，每步超时300秒且不重试，符合单物体搬运和安全约束。\"}",
+    "planner_raw": "{\"understanding\":\"将一个绿边储物箱从Pick Station 1（input_6）搬运到Place Station 3（output_4）\",\"reason\":\"根据L2任务SOP和当前场景映射，需依次执行移动到取货点、抓取目标物体、移动到放置点、放下物体四个步骤\",\"plan\":[{\"skill_name\":\"move\",\"description\":\"导航至取货工位input_6接近点\",\"inputs\":{\"target\":\"input_6\"},\"preconditions\":[\"底盘静止于起始位置\"],\"expected_output\":\"机器人到达input_6停止点\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"pick_up\",\"description\":\"在input_6抓取green_tote_b01_upper\",\"inputs\":{\"target\":\"input_6\",\"object_name\":\"green_tote_b01_upper\"},\"preconditions\":[\"夹爪为空\",\"底盘已停稳\"],\"expected_output\":\"成功抓取物体并提升至安全高度\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"move\",\"description\":\"携带物体导航至放置工位output_4\",\"inputs\":{\"target\":\"output_4\"},\"preconditions\":[\"夹爪已持握物体\"],\"expected_output\":\"机器人到达output_4停止点\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"place_down\",\"description\":\"在output_4放下物体\",\"inputs\":{\"target\":\"output_4\"},\"preconditions\":[\"底盘已停稳于放置点\"],\"expected_output\":\"物体放置成功，夹爪释放并收回\",\"timeout\":300,\"retries\":0}],\"explanation\":\"按照L2跨线搬运SOP，完成从input_6到output_4的单物体运输，全程遵守300s超时且不重试的约束\"}",
     "plan_warnings": [],
-    "elapsed_ms": 105868.0
+    "elapsed_ms": 110229.3
   },
-  "elapsed_sec": 123.461,
+  "elapsed_sec": 126.467,
   "error": null,
   "traceback": null,
   "phase": "before_close",
-  "saved_at": "2026-08-09 16:15:35"
+  "saved_at": "2026-08-09 23:28:00"
 }

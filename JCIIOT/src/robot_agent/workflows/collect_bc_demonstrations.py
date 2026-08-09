@@ -89,7 +89,7 @@ TARGETS = (
         "FactorySorting5_3FO3ERTPXEUT",
         "aux_input_1",
         "blue_tote_b01_near_right",
-        (1.45681, 8.473143, 0.0),
+        (1.35, 8.473143, 0.0),
         (0.0, 0.0, math.pi),
     ),
     DemoTarget(
@@ -524,6 +524,13 @@ def collect_target(
     descent_mode: str,
     expert_lift_height: float,
     expert_lift_hold_steps: int,
+    l3_target_x_offset: float,
+    l3_left_x_offset: float | None,
+    l3_right_lateral_offset: float,
+    l3_left_lateral_offset: float,
+    l3_right_z_offset: float,
+    l3_left_z_offset: float,
+    l3_torso_height: float,
     pose_overrides: dict[str, tuple[tuple[float, float, float], tuple[float, float, float], bool]],
 ) -> dict:
     output_path = output_dir / f"{target.key}.hdf5"
@@ -619,6 +626,18 @@ def collect_target(
             yaw = float(aligned_ori[2]) + factor * requested_yaw_delta
             set_base_world_yaw_direct(raw_env, raw_env.robots[0], yaw)
             set_base_xy_direct(raw_env, raw_env.robots[0], xy)
+            if target.level == "L3":
+                torso_addr = raw_env.sim.model.get_joint_qpos_addr(
+                    "robot0_torso_lift_joint"
+                )
+                raw_env.sim.data.qpos[int(torso_addr)] = float(l3_torso_height)
+                try:
+                    torso_vel_addr = raw_env.sim.model.get_joint_qvel_addr(
+                        "robot0_torso_lift_joint"
+                    )
+                    raw_env.sim.data.qvel[int(torso_vel_addr)] = 0.0
+                except Exception:
+                    pass
             zero_base_velocity(raw_env, raw_env.robots[0])
             raw_env.sim.forward()
             hard, proxy, _ = _external_penetrations(raw_env)
@@ -665,12 +684,23 @@ def collect_target(
             center_id = env.sim.model.site_name2id(f"{object_name}_center_site")
             center = np.asarray(env.sim.data.site_xpos[center_id], dtype=float)
             approach_sign = float(np.sign(aligned_pos[0] - center[0])) or 1.0
-            grasp_x = center[0] + approach_sign * 0.08
-            lateral = 0.293
-            grasp_z = center[2] - float(site_below_offset)
+            grasp_x = center[0] + approach_sign * float(l3_target_x_offset)
+            left_grasp_x = center[0] + approach_sign * float(
+                l3_target_x_offset
+                if l3_left_x_offset is None
+                else l3_left_x_offset
+            )
             targets = {
-                "right": np.array([grasp_x, center[1] + lateral, grasp_z]),
-                "left": np.array([grasp_x, center[1] - lateral, grasp_z]),
+                "right": np.array([
+                    grasp_x,
+                    center[1] + float(l3_right_lateral_offset),
+                    center[2] + float(l3_right_z_offset),
+                ]),
+                "left": np.array([
+                    left_grasp_x,
+                    center[1] + float(l3_left_lateral_offset),
+                    center[2] + float(l3_left_z_offset),
+                ]),
             }
             return targets, names
         if target.level != "L1" and object_name == target.object_name:
@@ -736,6 +766,8 @@ def collect_target(
             "safe vertical lift",
             "high outward clearance",
         }
+        if target.level == "L3" and label in {"XY approach", "outside-rim descent"}:
+            transit = True
         corrected_l3_descent = (
             target.level == "L3"
             and target.object_name.startswith("blue_tote_b01_")
@@ -744,9 +776,10 @@ def collect_target(
         if call_args is None or not (transit or corrected_l3_descent):
             return original_move_segment(*positional, **keyword)
         original_tolerance = float(call_args.arrival_tolerance)
+        transit_tolerance = 0.32 if target.level == "L3" else 0.055
         call_args.arrival_tolerance = max(
             original_tolerance,
-            0.07 if corrected_l3_descent else 0.055,
+            0.07 if corrected_l3_descent else transit_tolerance,
         )
         try:
             return original_move_segment(*positional, **keyword)
@@ -774,7 +807,7 @@ def collect_target(
             or (
                 descent_mode == "auto"
                 and (
-                    target.level in {"L2", "L3", "L4"}
+                    target.level in {"L2", "L4"}
                     or (
                         target.level == "L5"
                         and target.object_name == "white_tote_b01_left_back"
@@ -817,9 +850,9 @@ def collect_target(
             and target.object_name.startswith("blue_tote_b01_")
         )
         if corrected_l3_tote:
-            # Descend outside the two lateral walls, then close in from
-            # opposite sides. Approaching both hands from the robot-facing x
-            # side would push this rotated tote off its support before grasp.
+            # Descend with the hands spread along the robot-facing long wall,
+            # then enter together. Two separated grasps on one wall avoid the
+            # torque produced by gripping perpendicular walls.
             for arm in ("right", "left"):
                 outward[arm] = goal_targets[arm].copy()
                 lateral_direction = goal_targets[arm][:2] - midpoint
@@ -1055,6 +1088,19 @@ def collect_target(
         "descent_mode": descent_mode,
         "expert_lift_height": expert_lift_height,
         "expert_lift_hold_steps": expert_lift_hold_steps,
+        "l3_expert_target_offsets": {
+            "right_x": l3_target_x_offset,
+            "left_x": (
+                l3_target_x_offset
+                if l3_left_x_offset is None
+                else l3_left_x_offset
+            ),
+            "right_lateral": l3_right_lateral_offset,
+            "left_lateral": l3_left_lateral_offset,
+            "right_z": l3_right_z_offset,
+            "left_z": l3_left_z_offset,
+            "torso_height": l3_torso_height,
+        } if target.level == "L3" else None,
     }
     print(json.dumps(record, ensure_ascii=False), flush=True)
     if saved != rollouts:
@@ -1115,8 +1161,9 @@ def parse_args() -> argparse.Namespace:
         choices=("auto", "vertical", "side"),
         default="auto",
         help=(
-            "training expert approach. auto uses vertical descent for L1-L4 "
-            "and the L5 back tote, side entry for the other L5 totes."
+            "training expert approach. auto uses vertical descent for L1, L2, "
+            "L4 and the L5 back tote; corrected L3 and the other L5 totes use "
+            "side entry."
         ),
     )
     parser.add_argument(
@@ -1131,6 +1178,13 @@ def parse_args() -> argparse.Namespace:
         default=20,
         help="recorded hold steps after a successful expert lift",
     )
+    parser.add_argument("--l3-target-x-offset", type=float, default=0.20)
+    parser.add_argument("--l3-left-x-offset", type=float, default=0.20)
+    parser.add_argument("--l3-right-lateral-offset", type=float, default=0.20)
+    parser.add_argument("--l3-left-lateral-offset", type=float, default=-0.20)
+    parser.add_argument("--l3-right-z-offset", type=float, default=-0.055)
+    parser.add_argument("--l3-left-z-offset", type=float, default=-0.055)
+    parser.add_argument("--l3-torso-height", type=float, default=0.35)
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -1200,6 +1254,13 @@ def main() -> int:
                 descent_mode=args.descent_mode,
                 expert_lift_height=args.expert_lift_height,
                 expert_lift_hold_steps=args.expert_lift_hold_steps,
+                l3_target_x_offset=args.l3_target_x_offset,
+                l3_left_x_offset=args.l3_left_x_offset,
+                l3_right_lateral_offset=args.l3_right_lateral_offset,
+                l3_left_lateral_offset=args.l3_left_lateral_offset,
+                l3_right_z_offset=args.l3_right_z_offset,
+                l3_left_z_offset=args.l3_left_z_offset,
+                l3_torso_height=args.l3_torso_height,
                 pose_overrides=pose_overrides,
             )
         )

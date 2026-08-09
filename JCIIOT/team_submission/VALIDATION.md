@@ -7,7 +7,9 @@ Validated on 2026-08-09 against official base commit `fa0eaef`.
 | Canonical trajectory/offline score audit | 100/100 PASS |
 | Checkpoint SHA-256 | PASS |
 | L1–L5 trajectory schema (base, 27 joints, objects) | PASS |
-| Collision-marked frames | 0 / 2,263 |
+| Collision-marked frames | 0 / 2,349 |
+| Seven strict BC grasp/lift branches | 7 / 7 PASS |
+| Failed-grasp attachment recovery | absent |
 | `test_skill_pipeline.py` | PASS |
 | Contestant Python compilation | PASS |
 | `run_all_levels.py --dry-run` | PASS |

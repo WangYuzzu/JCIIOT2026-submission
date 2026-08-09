@@ -20,8 +20,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 APP_ROOT = HERE.parent
 MANIFEST = HERE / "evidence" / "manifest.json"
-MODEL = HERE / "models" / "jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth"
-MODEL_SHA256 = "dd41174cdd1ed40d70f309024283326f0732de1aaeb0e3275b1573c13c824c5f"
+MODEL = HERE / "models" / "jciiot_unified_task_heads_v16_deploy.pth"
+MODEL_SHA256 = "f8c7feb8047ad62f4e1e01f0e67886a0aa41f87781d486ae90e23164c37a7a5d"
 
 
 def sha256(path: Path) -> str:

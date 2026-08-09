@@ -7,10 +7,10 @@ object poses, then renders the official scene with the bird-view camera.
 
 | Level | Demonstration | Frames in canonical trajectory |
 |---|---|---:|
-| L1 | [bird view](l1_birdview.gif) | 303 |
+| L1 | [bird view](l1_birdview.gif) | 304 |
 | L2 | [bird view](l2_birdview.gif) | 344 |
-| L3 | [bird view](l3_birdview.gif) | 279 |
-| L4 | [bird view](l4_birdview.gif) | 363 |
+| L3 | [bird view](l3_birdview.gif) | 360 |
+| L4 | [bird view](l4_birdview.gif) | 367 |
 | L5 | [bird view](l5_birdview.gif) | 974 |
 
 Regenerate with:

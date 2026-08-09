@@ -50,6 +50,29 @@ SCENE_INPUT_OBJECT_MAP: dict[str, dict[str, list[str]]] = {
     for t in _TASK_LIST
 }
 
+# Both corrected L3 blue totes are score-valid. Prefer the aisle-near tote
+# because its collision-free bimanual stance has more arm workspace margin.
+# This affects only which allowed object the planner sees first.
+PREFERRED_OBJECT_ORDER: dict[tuple[str, str], tuple[str, ...]] = {
+    (
+        "FactorySorting5_3FO3ERTPXEUT",
+        "aux_input_1",
+    ): ("blue_tote_b01_near_right", "blue_tote_b01_far_right"),
+}
+
+
+def _apply_preferred_object_order(
+    env_name: str,
+    object_map: dict[str, list[str]],
+) -> None:
+    for (preferred_env, station), preferred in PREFERRED_OBJECT_ORDER.items():
+        if env_name != preferred_env or station not in object_map:
+            continue
+        available = [str(value) for value in object_map[station]]
+        ordered = [value for value in preferred if value in available]
+        ordered.extend(value for value in available if value not in ordered)
+        object_map[station] = ordered
+
 
 def _app_dir_from_args(value: str | None) -> Path:
     if value:
@@ -158,6 +181,7 @@ def _build_agent(app_dir: Path, task_index: int, knowledge_enabled: bool = True)
     # Merge task_config entry as override/fallback
     full_object_map = dict(dynamic_input_object_map)
     full_object_map.update(SCENE_INPUT_OBJECT_MAP.get(env_name, {}))
+    _apply_preferred_object_order(env_name, full_object_map)
 
     # The planner must see all objects at a station (especially the three L5
     # totes), while the fixed backend expects one representative scalar per

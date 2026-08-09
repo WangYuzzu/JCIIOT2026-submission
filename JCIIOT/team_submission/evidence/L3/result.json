@@ -4,16 +4,16 @@
   "env_name": "FactorySorting5_3FO3ERTPXEUT",
   "status": "OK",
   "success": true,
-  "trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_L3_AUG2_OK.json",
-  "running_trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_L3_AUG2_RUNNING.json",
+  "trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_232111_SUBMISSION_L3_OK.json",
+  "running_trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_232111_SUBMISSION_L3_RUNNING.json",
   "result": {
     "skill_name": "composed",
     "success": true,
-    "message": "按照L3 SOP执行标准单物体搬运：从aux_input_1抓取blue_tote_b01_far_right，运至output_5放置，全程遵守单物体运输、安全高度保持及300s超时无重试约束。",
+    "message": "严格遵循L3 SOP（Case 5），执行aux_input_1→output_5的标准搬运流程：移动到取货点→抓取blue_tote_b01_near_right→移动到放置点→放下物体，全程遵守300s超时无重试约束",
     "steps": [
       {
         "skill": "move",
-        "description": "导航至取货工位aux_input_1接近点",
+        "description": "导航至Pick Station 1（aux_input_1）取货接近点",
         "success": true,
         "message": "Moved to: aux_input_1",
         "payload": {
@@ -62,28 +62,31 @@
         },
         "inputs": {
           "target": "aux_input_1",
-          "object_name": "blue_tote_b01_far_right"
+          "object_name": [
+            "blue_tote_b01_near_right",
+            "blue_tote_b01_far_right"
+          ]
         },
         "preconditions": [
           "底盘静止于起始位置",
           "夹爪为空"
         ],
-        "expected_output": "机器人到达aux_input_1停止点",
+        "expected_output": "机器人到达aux_input_1停止点，距离工位约0.8m",
         "timeout": 3000.0,
         "retries": 0,
         "attempts": 1
       },
       {
         "skill": "pick_up",
-        "description": "在aux_input_1抓取蓝色料箱blue_tote_b01_far_right",
+        "description": "在aux_input_1抓取蓝色料箱blue_tote_b01_near_right",
         "success": true,
         "message": "Physics grasp OK: aux_input_1",
         "payload": {
           "action": "pick_up",
           "target": "aux_input_1",
           "backend_source": "scene_bc_aux_input_1",
-          "object_name": "blue_tote_b01_far_right",
-          "requested_object_name": "blue_tote_b01_far_right",
+          "object_name": "blue_tote_b01_near_right",
+          "requested_object_name": "blue_tote_b01_near_right",
           "grasp_initial_base_pose": {
             "xy": [
               1.456811239992157,
@@ -101,12 +104,12 @@
               3.141592653589793
             ]
           },
-          "method": "physics+attachment_recovery",
+          "method": "physics",
           "ok": true
         },
         "inputs": {
           "target": "aux_input_1",
-          "object_name": "blue_tote_b01_far_right",
+          "object_name": "blue_tote_b01_near_right",
           "grasp_initial_base_pose": {
             "xy": [
               1.456811239992157,
@@ -127,17 +130,17 @@
         },
         "preconditions": [
           "夹爪为空",
-          "底盘已停稳于aux_input_1",
+          "底盘已停稳于aux_input_1接近点",
           "物体在可达范围内"
         ],
-        "expected_output": "成功抓取物体并提升至安全高度150mm",
+        "expected_output": "成功抓取物体并提升至安全高度150mm以上",
         "timeout": 3000.0,
         "retries": 0,
         "attempts": 1
       },
       {
         "skill": "move",
-        "description": "携带物体导航至放置工位output_5",
+        "description": "携带物体导航至Place Station 2（output_5）放置接近点",
         "success": true,
         "message": "Moved to: output_5",
         "payload": {
@@ -166,19 +169,19 @@
           },
           "final_base_pose": {
             "xy": [
-              4.000001413116969,
-              -7.250003978780709
+              4.000005233571906,
+              -7.2500030959577
             ],
-            "yaw": 3.1339569091796875,
+            "yaw": 3.132464647293091,
             "robot_base_pos": [
-              4.000001413116969,
-              -7.250003978780709,
+              4.000005233571906,
+              -7.2500030959577,
               0.0
             ],
             "robot_base_ori": [
               0.0,
               0.0,
-              3.1339569091796875
+              3.132464647293091
             ]
           },
           "waypoints": 102,
@@ -191,14 +194,14 @@
           "夹爪已持握物体",
           "抓取提升已确认成功"
         ],
-        "expected_output": "机器人到达output_5停止点",
+        "expected_output": "机器人到达output_5停止点，距离工位约0.8m",
         "timeout": 3000.0,
         "retries": 0,
         "attempts": 1
       },
       {
         "skill": "place_down",
-        "description": "在output_5放下蓝色料箱",
+        "description": "在output_5放置蓝色料箱",
         "success": true,
         "message": "Physics place OK: output_5",
         "payload": {
@@ -211,8 +214,9 @@
           "target": "output_5"
         },
         "preconditions": [
-          "底盘已停稳于output_5",
-          "目标桌面已清空"
+          "底盘已停稳于output_5接近点",
+          "目标桌面已清空",
+          "夹爪持握物体"
         ],
         "expected_output": "物体放置成功，夹爪释放并收回",
         "timeout": 3000.0,
@@ -222,41 +226,41 @@
     ],
     "thinking": {
       "version": "2.0",
-      "task_understanding": "将蓝色料箱从Pick Station 1（aux_input_1）搬运至Place Station 2（output_5），执行标准4步搬运流程。",
-      "selection_reason": "根据L3任务SOP，Pick Station 1映射为aux_input_1，Place Station 2映射为output_5。当前场景物体映射中aux_input_1对应blue_tote_b01_far_right，需按move→pick_up→move→place_down顺序执行，严格遵守超时300s且不重试的约束。",
+      "task_understanding": "根据L3任务SOP，将蓝色料箱从Pick Station 1（aux_input_1）搬运到Place Station 2（output_5）",
+      "selection_reason": "SOP Case 5明确指定L3任务路径为aux_input_1→output_5，允许抓取对象为blue_tote_b01_near_right或blue_tote_b01_far_right，选择near_right作为目标物体，按标准4步流程执行",
       "execution_steps": [
-        "导航至取货工位aux_input_1接近点",
-        "在aux_input_1抓取蓝色料箱blue_tote_b01_far_right",
-        "携带物体导航至放置工位output_5",
-        "在output_5放下蓝色料箱"
+        "导航至Pick Station 1（aux_input_1）取货接近点",
+        "在aux_input_1抓取蓝色料箱blue_tote_b01_near_right",
+        "携带物体导航至Place Station 2（output_5）放置接近点",
+        "在output_5放置蓝色料箱"
       ],
       "plan_summary": [
         {
           "skill": "move",
-          "description": "导航至取货工位aux_input_1接近点"
+          "description": "导航至Pick Station 1（aux_input_1）取货接近点"
         },
         {
           "skill": "pick_up",
-          "description": "在aux_input_1抓取蓝色料箱blue_tote_b01_far_right"
+          "description": "在aux_input_1抓取蓝色料箱blue_tote_b01_near_right"
         },
         {
           "skill": "move",
-          "description": "携带物体导航至放置工位output_5"
+          "description": "携带物体导航至Place Station 2（output_5）放置接近点"
         },
         {
           "skill": "place_down",
-          "description": "在output_5放下蓝色料箱"
+          "description": "在output_5放置蓝色料箱"
         }
       ],
-      "result_explanation": "按照L3 SOP执行标准单物体搬运：从aux_input_1抓取blue_tote_b01_far_right，运至output_5放置，全程遵守单物体运输、安全高度保持及300s超时无重试约束。"
+      "result_explanation": "严格遵循L3 SOP（Case 5），执行aux_input_1→output_5的标准搬运流程：移动到取货点→抓取blue_tote_b01_near_right→移动到放置点→放下物体，全程遵守300s超时无重试约束"
     },
-    "planner_raw": "{\"understanding\":\"将蓝色料箱从Pick Station 1（aux_input_1）搬运至Place Station 2（output_5），执行标准4步搬运流程。\",\"reason\":\"根据L3任务SOP，Pick Station 1映射为aux_input_1，Place Station 2映射为output_5。当前场景物体映射中aux_input_1对应blue_tote_b01_far_right，需按move→pick_up→move→place_down顺序执行，严格遵守超时300s且不重试的约束。\",\"plan\":[{\"skill_name\":\"move\",\"description\":\"导航至取货工位aux_input_1接近点\",\"inputs\":{\"target\":\"aux_input_1\"},\"preconditions\":[\"底盘静止于起始位置\",\"夹爪为空\"],\"expected_output\":\"机器人到达aux_input_1停止点\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"pick_up\",\"description\":\"在aux_input_1抓取蓝色料箱blue_tote_b01_far_right\",\"inputs\":{\"target\":\"aux_input_1\",\"object_name\":\"blue_tote_b01_far_right\"},\"preconditions\":[\"夹爪为空\",\"底盘已停稳于aux_input_1\",\"物体在可达范围内\"],\"expected_output\":\"成功抓取物体并提升至安全高度150mm\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"move\",\"description\":\"携带物体导航至放置工位output_5\",\"inputs\":{\"target\":\"output_5\"},\"preconditions\":[\"夹爪已持握物体\",\"抓取提升已确认成功\"],\"expected_output\":\"机器人到达output_5停止点\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"place_down\",\"description\":\"在output_5放下蓝色料箱\",\"inputs\":{\"target\":\"output_5\"},\"preconditions\":[\"底盘已停稳于output_5\",\"目标桌面已清空\"],\"expected_output\":\"物体放置成功，夹爪释放并收回\",\"timeout\":300,\"retries\":0}],\"explanation\":\"按照L3 SOP执行标准单物体搬运：从aux_input_1抓取blue_tote_b01_far_right，运至output_5放置，全程遵守单物体运输、安全高度保持及300s超时无重试约束。\"}",
+    "planner_raw": "{\"understanding\":\"根据L3任务SOP，将蓝色料箱从Pick Station 1（aux_input_1）搬运到Place Station 2（output_5）\",\"reason\":\"SOP Case 5明确指定L3任务路径为aux_input_1→output_5，允许抓取对象为blue_tote_b01_near_right或blue_tote_b01_far_right，选择near_right作为目标物体，按标准4步流程执行\",\"plan\":[{\"skill_name\":\"move\",\"description\":\"导航至Pick Station 1（aux_input_1）取货接近点\",\"inputs\":{\"target\":\"aux_input_1\"},\"preconditions\":[\"底盘静止于起始位置\",\"夹爪为空\"],\"expected_output\":\"机器人到达aux_input_1停止点，距离工位约0.8m\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"pick_up\",\"description\":\"在aux_input_1抓取蓝色料箱blue_tote_b01_near_right\",\"inputs\":{\"target\":\"aux_input_1\",\"object_name\":\"blue_tote_b01_near_right\"},\"preconditions\":[\"夹爪为空\",\"底盘已停稳于aux_input_1接近点\",\"物体在可达范围内\"],\"expected_output\":\"成功抓取物体并提升至安全高度150mm以上\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"move\",\"description\":\"携带物体导航至Place Station 2（output_5）放置接近点\",\"inputs\":{\"target\":\"output_5\"},\"preconditions\":[\"夹爪已持握物体\",\"抓取提升已确认成功\"],\"expected_output\":\"机器人到达output_5停止点，距离工位约0.8m\",\"timeout\":300,\"retries\":0},{\"skill_name\":\"place_down\",\"description\":\"在output_5放置蓝色料箱\",\"inputs\":{\"target\":\"output_5\"},\"preconditions\":[\"底盘已停稳于output_5接近点\",\"目标桌面已清空\",\"夹爪持握物体\"],\"expected_output\":\"物体放置成功，夹爪释放并收回\",\"timeout\":300,\"retries\":0}],\"explanation\":\"严格遵循L3 SOP（Case 5），执行aux_input_1→output_5的标准搬运流程：移动到取货点→抓取blue_tote_b01_near_right→移动到放置点→放下物体，全程遵守300s超时无重试约束\"}",
     "plan_warnings": [],
-    "elapsed_ms": 92649.3
+    "elapsed_ms": 135844.1
   },
-  "elapsed_sec": 107.916,
+  "elapsed_sec": 152.049,
   "error": null,
   "traceback": null,
   "phase": "before_close",
-  "saved_at": "2026-08-09 15:42:30"
+  "saved_at": "2026-08-09 23:23:41"
 }

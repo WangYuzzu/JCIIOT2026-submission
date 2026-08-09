@@ -1,14 +1,14 @@
 {
   "ok": true,
-  "checkpoint": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
-  "checkpoint_sha256": "dd41174cdd1ed40d70f309024283326f0732de1aaeb0e3275b1573c13c824c5f",
+  "checkpoint": "team_submission/models/jciiot_unified_task_heads_v16_deploy.pth",
+  "checkpoint_sha256": "f8c7feb8047ad62f4e1e01f0e67886a0aa41f87781d486ae90e23164c37a7a5d",
   "score": 100,
   "max_score": 100,
   "levels": [
     {
       "level": "L1",
       "trajectory": "team_submission/evidence/L1/trajectory.json",
-      "frames": 303,
+      "frames": 304,
       "successful_grasps": 1,
       "collision_frames": 0,
       "score": 10,
@@ -18,11 +18,11 @@
           "object": "line_5_container_h01_near",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 0.018139,
+          "target_distance_m": 0.017842,
           "placed": true,
           "final_position": [
-            -0.147962,
-            -7.291907,
+            -0.148253,
+            -7.291841,
             1.017982
           ]
         }
@@ -43,11 +43,11 @@
           "object": "green_tote_b01_upper",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 0.049075,
+          "target_distance_m": 0.060118,
           "placed": true,
           "final_position": [
-            -0.116966,
-            -7.291997,
+            -0.105972,
+            -7.293283,
             1.292979
           ]
         }
@@ -58,22 +58,22 @@
     {
       "level": "L3",
       "trajectory": "team_submission/evidence/L3/trajectory.json",
-      "frames": 279,
+      "frames": 360,
       "successful_grasps": 1,
       "collision_frames": 0,
       "score": 20,
       "max_score": 20,
       "details": [
         {
-          "object": "blue_tote_b01_far_right",
+          "object": "blue_tote_b01_near_right",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 4.7e-05,
+          "target_distance_m": 0.074662,
           "placed": true,
           "final_position": [
-            4.871994,
-            -7.261047,
-            1.292978
+            4.797368,
+            -7.263106,
+            1.368404
           ]
         }
       ],
@@ -83,7 +83,7 @@
     {
       "level": "L4",
       "trajectory": "team_submission/evidence/L4/trajectory.json",
-      "frames": 363,
+      "frames": 367,
       "successful_grasps": 1,
       "collision_frames": 0,
       "score": 25,
@@ -93,12 +93,12 @@
           "object": "blue_container_h01_back_upper",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 0.038471,
+          "target_distance_m": 0.117569,
           "placed": true,
           "final_position": [
-            4.910157,
-            -7.265905,
-            1.321545
+            4.989402,
+            -7.267259,
+            1.217677
           ]
         }
       ],
@@ -118,11 +118,11 @@
           "object": "white_tote_b01_left_back",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 0.549995,
+          "target_distance_m": 0.583261,
           "placed": true,
           "final_position": [
-            -0.405995,
-            8.473195,
+            -0.438797,
+            8.449731,
             1.099978
           ]
         },
@@ -130,24 +130,24 @@
           "object": "white_tote_b01_left_center",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 0.262221,
+          "target_distance_m": 0.494307,
           "placed": true,
           "final_position": [
-            0.323206,
-            8.664429,
-            1.099968
+            0.622655,
+            8.596405,
+            1.099945
           ]
         },
         {
           "object": "white_tote_b01_left_front",
           "grasped": true,
           "left_source": true,
-          "target_distance_m": 0.63167,
+          "target_distance_m": 0.520914,
           "placed": true,
           "final_position": [
-            0.771798,
-            8.403166,
-            1.099979
+            0.663508,
+            8.434749,
+            1.408868
           ]
         }
       ],

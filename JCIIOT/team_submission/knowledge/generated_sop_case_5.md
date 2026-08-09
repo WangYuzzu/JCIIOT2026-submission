@@ -22,8 +22,8 @@ Execution:
 
 Validation note: the former `input_6` / orange-tote mapping is obsolete.
 
-Runtime safety note: the unified BC is always attempted first and must pass
-two-sided finger contact plus lift verification. The August blue-tote asset is
-outside the pre-correction training distribution; if that verification fails,
-only this level may use the explicitly logged
-`transport_attachment_recovery`. No other level enables this recovery.
+Runtime safety note: the final unified BC was retrained on 48 successful
+demonstrations of the corrected blue tote at the collision-free deployment
+pose. Execution must pass two-sided finger contact plus physical lift
+verification; a failed grasp remains a failure. The final runtime contains no
+failed-grasp attachment recovery.
