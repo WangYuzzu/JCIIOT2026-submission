@@ -5,34 +5,200 @@
     "ollama_base_url": "http://localhost:11434",
     "ollama_model": "qwen3.6:27b-mtp-q4_K_M",
     "vision_model": "qwen3-vl:8b",
-    "openai_base_url": "https://api.deepseek.com",
-    "openai_model": "deepseek-v4-flash"
+    "openai_base_url": "https://open.bigmodel.cn/api/paas/v4",
+    "openai_model": "glm-5.2"
   },
   "navigation": {
     "_comment": "导航参数 —— 控制底盘移动的速度、精度和模式",
     "max_steps": 3000,
-    "waypoint_tolerance": 0.01,
-    "settle_steps": 5,
-    "max_linear": 0.70,
-    "max_angular": 1.20,
-    "k_linear": 1.2,
-    "k_angular": 1.8,
+    "waypoint_tolerance": 0.03,
+    "settle_steps": 0,
+    "max_linear": 2.00,
+    "max_angular": 3.00,
+    "k_linear": 3.0,
+    "k_angular": 3.0,
     "holonomic_base": true,
     "yaw_control": false,
     "turn_in_place_angle": 0.65,
     "drive_mode": "direct",
     "control_freq": 20
   },
+  "move_skill": {
+    "_comment": "A* 安全膨胀参数。为机器人手臂而非仅底盘保留障碍物净距；端点附近仅恢复地图原本可通行的格子。",
+    "obstacle_inflation_radius": 0.50,
+    "endpoint_clearance_radius": 0.50,
+    "minimum_obstacle_inflation_radius": 0.10,
+    "inflation_backoff_step": 0.05,
+    "goal_bridge_max_distance": 0.80,
+    "egress_bridge_max_distance": 1.00,
+    "scene_approach_overrides": {
+      "FactorySorting3_3FO3ERRPH7X9": {
+        "input_6": {
+        "xy": [
+          12.167624,
+          5.309856
+        ],
+        "pre_turn_xy": [
+          12.167624,
+          6.109856
+        ],
+        "yaw": -1.5707963267948966
+        }
+      },
+      "FactorySorting5_3FO3ERTPXEUT": {
+        "aux_input_1": {
+        "xy": [
+          1.45681,
+          8.473143
+        ],
+        "pre_turn_xy": [
+          2.25681,
+          8.473143
+        ],
+        "yaw": 3.141592653589793
+        }
+      },
+      "FactorySorting7_3FO3ERFKY9RN": {
+        "input_2": {
+          "xy": [
+            -8.830312,
+            5.353394
+          ],
+          "yaw": 3.141592653589793
+        }
+      },
+      "FactorySorting9_3FO3ERT2C5FP": {
+        "input_1": [
+          {
+          "xy": [
+            -14.674088,
+            6.36
+          ],
+          "pre_turn_xy": [
+            -14.674088,
+            7.16
+          ],
+          "yaw": -1.5707963267948966
+          },
+          {
+          "xy": [
+            -13.824088,
+            4.9547
+          ],
+          "pre_turn_xy": [
+            -12.85,
+            4.9547
+          ],
+          "final_approach_max_linear": 0.05,
+          "yaw": 3.141592653589793
+          },
+          {
+          "xy": [
+            -13.824088,
+            4.414868
+          ],
+          "pre_turn_xy": [
+            -12.85,
+            4.414868
+          ],
+          "final_approach_max_linear": 0.05,
+          "yaw": 3.141592653589793
+          }
+        ]
+      }
+    }
+  },
   "grasp_policy": {
     "_comment": "BC 抓取策略参数 —— 控制基于行为克隆的抓取执行",
-    "checkpoint_path": "robosuite/robosuite/model_epoch_500.pth",
-    "checkpoint_fallback_path": "robosuite/robosuite/model_epoch_150.pth",
+    "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+    "checkpoint_fallback_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
     "eval_steps": 360,
     "post_hold_steps": 5,
     "initial_view_steps": 5,
     "debug_policy": false,
     "debug_every": 25,
-    "record_frame_interval": 5
+    "record_frame_interval": 5,
+    "scene_overrides": {
+      "FactorySorting3_3FO3ERRPH7X9": {
+        "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+        "backend_source": "scene_bc_input_6",
+        "eval_steps": 500
+      },
+      "FactorySorting5_3FO3ERTPXEUT": {
+        "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+        "backend_source": "scene_bc_aux_input_1",
+        "policy_yaw": 3.141592653589793,
+        "eval_steps": 120,
+        "allow_attachment_recovery": true
+      },
+      "FactorySorting7_3FO3ERFKY9RN": {
+        "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+        "backend_source": "scene_bc_input_2",
+        "device": "cuda",
+        "policy_yaw": 3.141592653589793,
+        "eval_steps": 560
+      },
+      "FactorySorting9_3FO3ERT2C5FP": {
+        "record_frame_interval": 50,
+        "object_overrides": {
+          "white_tote_b01_left_back": {
+            "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+            "backend_source": "scene_bc_input_1_back",
+            "device": "cuda",
+            "policy_yaw": -1.5707963267948966,
+            "eval_steps": 700,
+            "post_hold_steps": 60
+          },
+          "white_tote_b01_left_center": {
+            "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+            "backend_source": "scene_bc_input_1_center",
+            "device": "cuda",
+            "policy_yaw": 3.141592653589793,
+            "eval_steps": 690,
+            "post_hold_steps": 20
+          },
+          "white_tote_b01_left_front": {
+            "checkpoint_path": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+            "backend_source": "scene_bc_input_1_front",
+            "device": "cuda",
+            "policy_yaw": 3.141592653589793,
+            "eval_steps": 690,
+            "post_hold_steps": 60
+          }
+        }
+      }
+    }
+  },
+  "place_skill": {
+    "_comment": "多物体任务在同一目标台面使用分散槽位，避免后放物体推落先放物体",
+    "upright_transport_objects": [
+      "white_tote_b01_left_back",
+      "white_tote_b01_left_center",
+      "white_tote_b01_left_front"
+    ],
+    "scene_world_yaws": {
+      "FactorySorting9_3FO3ERT2C5FP": {
+        "white_tote_b01_left_back": 1.5707963267948966,
+        "white_tote_b01_left_center": 1.5707963267948966,
+        "white_tote_b01_left_front": 1.5707963267948966
+      }
+    },
+    "scene_target_offsets": {
+      "FactorySorting9_3FO3ERT2C5FP": {
+        "white_tote_b01_left_back": [
+          -0.55,
+          0.0
+        ],
+        "white_tote_b01_left_center": [
+          0.0,
+          0.0
+        ],
+        "white_tote_b01_left_front": [
+          0.55,
+          0.0
+        ]
+      }
+    }
   },
   "lift": {
     "_comment": "抬升参数 —— 抓取后验证物体是否牢固的抬升阶段",

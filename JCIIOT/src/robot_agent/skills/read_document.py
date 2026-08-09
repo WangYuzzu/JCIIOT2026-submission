@@ -10,6 +10,15 @@ from robot_agent.skills.base import BaseSkill
 
 logger = logging.getLogger(__name__)
 
+_VISION_PROMPT = (
+    "Describe this factory layout image. What stations, tables, "
+    "production lines, objects, and their positions do you see?"
+)
+_EMPTY_RESPONSE_RETRY_PROMPT = (
+    "用一句话客观描述图中可见的工厂布局、工位、桌子、生产线和主要物体，"
+    "不要推测看不见的信息。"
+)
+
 
 class ReadDocumentSkill(BaseSkill):
     """Read a .docx file: extract text, optionally describe images via VLM.
@@ -74,14 +83,34 @@ class ReadDocumentSkill(BaseSkill):
                     for name, img_data in images.items():
                         try:
                             desc = ask_vision(
-                                "Describe this factory layout image. What stations, tables, "
-                                "production lines, objects, and their positions do you see?",
+                                _VISION_PROMPT,
                                 img_data,
                                 base_url=self._ollama_url,
                                 model=self._vision_model,
                                 api_type=self._api_type,
                                 api_key=self._api_key,
                             )
+                            # Thinking-capable OpenAI-compatible VLMs can spend
+                            # the whole output budget on reasoning and return an
+                            # empty ``content`` field.  The core vision client is
+                            # competition read-only, so retry here with a short,
+                            # concrete prompt that reliably leaves room for the
+                            # final answer.
+                            if not str(desc or "").strip():
+                                logger.warning(
+                                    "VLM returned empty content for %s; retrying with a concise prompt",
+                                    name,
+                                )
+                                desc = ask_vision(
+                                    _EMPTY_RESPONSE_RETRY_PROMPT,
+                                    img_data,
+                                    base_url=self._ollama_url,
+                                    model=self._vision_model,
+                                    api_type=self._api_type,
+                                    api_key=self._api_key,
+                                )
+                            if not str(desc or "").strip():
+                                desc = "VLM empty response after concise retry"
                             img_descriptions[name] = desc
                         except Exception as exc:
                             img_descriptions[name] = f"VLM error: {exc}"

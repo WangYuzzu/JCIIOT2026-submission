@@ -1,37 +1,30 @@
-<!-- COMPETITION LOCKED — DO NOT MODIFY -->
-
-# L5 Task — Extreme Distance Transport
-
-Level: L5 (max 30 points)
-Scene: factory_sorting_9
+# L5 SOP Knowledge — Case 9 (August 2026 correction)
 
 ## Task
 
-Transport three large white tote boxes from Pick Station 6 to Place Station 1.
+Move all three white-rimmed storage totes from **Pick Station 6** to
+**Place Station 1**.
 
-## Station Mapping
+## Authoritative simulator mapping
 
-- Pick Station 6 = input_1, center (-14.54, 5.01)
-- Place Station 1 = output_6, center (10.03, -7.27)
-- Robot start: (13.5, 0.0)
-- Target objects:
-  - white_tote_b01_left_center
-  - white_tote_b01_left_front
-  - white_tote_b01_left_back
+- Scene: `FactorySorting9_3FO3ERT2C5FP`
+- Pick Station 6: `input_1`, center `(-14.544, 5.010)`
+- Place Station 1: `aux_output_1`, center `(0.144, 8.473)`, approach `(0.110, 7.550)`
+- Objects: `white_tote_b01_left_back`, `white_tote_b01_left_center`,
+  `white_tote_b01_left_front`
+- Required quantity: three distinct objects
 
-## Grasp Pose (BC Policy)
+The August 2026 official task correction supersedes the former destination
+`output_6`. Do not use that obsolete destination.
 
-- Robot stop point at input_1: (5.03, -3.84, 0.0), yaw=-3.14
+## Required plan
 
-## Object Inventory (L5 Scene)
+For each distinct object, execute one complete cycle before starting the next:
 
-Every input port and its assigned graspable object:
+1. `move(target="input_1", object_name=<current tote>)`
+2. `pick_up(target="input_1", object_name=<current tote>)`
+3. `move(target="aux_output_1", object_name=<current tote>)`
+4. `place_down(target="aux_output_1", object_name=<current tote>)`
 
-- input_1: white_tote_b01_left_center, white_tote_b01_left_front, white_tote_b01_left_back
-- input_2 → blue_container_h01_back_center, blue_container_h01_back_left, blue_container_h01_back_right
-- input_3 → dark_tote_b01_upper, dark_tote_b01_lower
-- input_4 → line_4_container_h01
-- input_5 → line_5_container_h10
-- input_6 → line_6_tote_b01
-
-CRITICAL: When calling pick_up, you MUST provide the exact object_name from the inventory above.
+Preferred order: back, center, front. Place the three totes in separate slots
+on the auxiliary output table. Never reuse a previously transported object.

@@ -39,8 +39,15 @@ def _primary_object_name(value) -> str:
     return ""
 
 
-SCENE_INPUT_OBJECT_MAP: dict[str, dict[str, str]] = {
-    t["env_name"]: {t["source"]: _primary_object_name(t.get("object", ""))} for t in _TASK_LIST
+SCENE_INPUT_OBJECT_MAP: dict[str, dict[str, list[str]]] = {
+    t["env_name"]: {
+        t["source"]: (
+            [str(value) for value in t.get("object", []) if value]
+            if isinstance(t.get("object"), (list, tuple))
+            else [str(t.get("object"))]
+        )
+    }
+    for t in _TASK_LIST
 }
 
 
@@ -132,31 +139,40 @@ def _build_agent(app_dir: Path, task_index: int, knowledge_enabled: bool = True)
     backend.reset()
 
     # Build dynamic input_object_map from material_metadata (all objects with port_name)
-    dynamic_input_object_map: dict[str, str] = {}
+    dynamic_input_object_map: dict[str, list[str]] = {}
     raw_metadata = getattr(backend.env, "material_metadata", {}) or {}
     for obj_name, info in raw_metadata.items():
         if not isinstance(info, dict):
             continue
         port_name = str(info.get("port_name") or "")
         if port_name:
-            dynamic_input_object_map[port_name] = obj_name
+            dynamic_input_object_map.setdefault(port_name, []).append(obj_name)
             # Also register the line_* variant
             if port_name.startswith("input_"):
                 line_name = "line_" + port_name.split("_", 1)[1]
-                dynamic_input_object_map[line_name] = obj_name
+                dynamic_input_object_map.setdefault(line_name, []).append(obj_name)
             elif port_name.startswith("line_"):
                 input_name = "input_" + port_name.split("_", 1)[1]
-                dynamic_input_object_map[input_name] = obj_name
+                dynamic_input_object_map.setdefault(input_name, []).append(obj_name)
 
     # Merge task_config entry as override/fallback
     full_object_map = dict(dynamic_input_object_map)
     full_object_map.update(SCENE_INPUT_OBJECT_MAP.get(env_name, {}))
 
+    # The planner must see all objects at a station (especially the three L5
+    # totes), while the fixed backend expects one representative scalar per
+    # station for its fallback resolver. Exact object names from plan steps
+    # continue to take priority during grasp execution.
+    backend_object_map = {
+        station: _primary_object_name(objects)
+        for station, objects in full_object_map.items()
+    }
+
     # Checkpoint path is resolved from knowledge/robot_params.json at
     # policy-load time — no hardcoded path here.
     backend.set_physics_grasp_config(
         device="cpu",
-        object_map=full_object_map,
+        object_map=backend_object_map,
     )
 
     # Second reset: now _has_physics=True, so visible birdview viewer is created

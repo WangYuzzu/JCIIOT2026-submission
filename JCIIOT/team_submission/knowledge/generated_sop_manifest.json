@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-08-09T08:00:00Z",
+  "generator": "robot_agent.workflows.generate_sop_knowledge",
+  "official_base_commit": "fa0eaef",
+  "generation_models": {
+    "text": "glm-5.2",
+    "vision": "glm-5v-turbo"
+  },
+  "validation": {
+    "task_truth": "knowledge/task_config.json",
+    "scene_truth": "runtime semantic map",
+    "reference_markdown_used_as_generation_input": false,
+    "august_2026_corrections_applied": true
+  },
+  "documents": [
+    {
+      "level": "L1",
+      "case": 1,
+      "source": "sop+prompt/JCIIOT 2026 case 1 SOP.docx",
+      "source_sha256": "32a446a8395b03b46c9581d3e4978bd84bd90f31096e675da77366fd1cdc9c1c",
+      "output": "team_submission/knowledge/generated_sop_case_1.md",
+      "source_port": "input_5",
+      "target_port": "output_4",
+      "objects": ["line_5_container_h01_near"]
+    },
+    {
+      "level": "L2",
+      "case": 3,
+      "source": "competition description/sop+prompt/JCIIOT 2026 case 3 SOP.docx",
+      "source_sha256": "6fe5f27bd234065eb5686b60919203431920338e83f8a3f0ef66d0e57cdf1178",
+      "output": "team_submission/knowledge/generated_sop_case_3.md",
+      "source_port": "input_6",
+      "target_port": "output_4",
+      "objects": ["green_tote_b01_upper"]
+    },
+    {
+      "level": "L3",
+      "case": 5,
+      "source": "competition description/sop+prompt/JCIIOT 2026 case 5 SOP.docx",
+      "source_sha256": "37cdb02c87d2dfec8b454efee564882f7ac804305cfcce5877a33e9342b648d5",
+      "output": "team_submission/knowledge/generated_sop_case_5.md",
+      "source_port": "aux_input_1",
+      "target_port": "output_5",
+      "objects": ["blue_tote_b01_far_right", "blue_tote_b01_near_right"],
+      "correction": "August 2026 official replacement of obsolete input_6/orange tote mapping"
+    },
+    {
+      "level": "L4",
+      "case": 7,
+      "source": "sop+prompt/JCIIOT 2026 case 7 SOP.docx",
+      "source_sha256": "df637fcb1e558cbcacfc895d38b435008aa9eb15e1f85744631cea12b137e568",
+      "output": "team_submission/knowledge/generated_sop_case_7.md",
+      "source_port": "input_2",
+      "target_port": "output_5",
+      "objects": ["blue_container_h01_back_upper"]
+    },
+    {
+      "level": "L5",
+      "case": 9,
+      "source": "sop+prompt/JCIIOT 2026 case 9 SOP.docx",
+      "source_sha256": "de1a3779d119a17031a17d4ca7812366b5bc1f6c66982617272aa66006b7e5ba",
+      "output": "team_submission/knowledge/generated_sop_case_9.md",
+      "source_port": "input_1",
+      "target_port": "aux_output_1",
+      "objects": [
+        "white_tote_b01_left_back",
+        "white_tote_b01_left_center",
+        "white_tote_b01_left_front"
+      ],
+      "correction": "August 2026 official replacement of obsolete output_6 mapping"
+    }
+  ]
+}

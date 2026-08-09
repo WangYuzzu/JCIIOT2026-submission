@@ -1,7 +1,62 @@
 {
-  "updated_at": "2026-06-29T16:48:29",
-  "document_count": 1,
+  "updated_at": "2026-08-09T08:00:00Z",
+  "document_count": 6,
   "documents": {
+    "generated_sop_case_1.md": {
+      "title": "AI-Generated SOP — Case 1",
+      "category": "reference",
+      "tags": [
+        "SOP",
+        "reference",
+        "API",
+        "config"
+      ],
+      "added_at": "2026-07-23T11:34:25"
+    },
+    "generated_sop_case_3.md": {
+      "title": "AI-Generated SOP — Case 3",
+      "category": "reference",
+      "tags": [
+        "SOP",
+        "reference",
+        "API",
+        "config"
+      ],
+      "added_at": "2026-07-23T11:34:25"
+    },
+    "generated_sop_case_5.md": {
+      "title": "AI-Generated SOP — Case 5",
+      "category": "reference",
+      "tags": [
+        "SOP",
+        "reference",
+        "API",
+        "config"
+      ],
+      "added_at": "2026-07-23T11:34:25"
+    },
+    "generated_sop_case_7.md": {
+      "title": "AI-Generated SOP — Case 7",
+      "category": "reference",
+      "tags": [
+        "SOP",
+        "reference",
+        "API",
+        "config"
+      ],
+      "added_at": "2026-07-23T11:34:25"
+    },
+    "generated_sop_case_9.md": {
+      "title": "AI-Generated SOP — Case 9",
+      "category": "reference",
+      "tags": [
+        "SOP",
+        "reference",
+        "API",
+        "config"
+      ],
+      "added_at": "2026-07-23T11:34:25"
+    },
     "my_strategy.md": {
       "title": "<!-- TEAM KNOWLEDGE — Customize your strategy here -->",
       "category": "reference",

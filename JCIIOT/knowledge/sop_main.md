@@ -1,42 +1,33 @@
-<!-- COMPETITION LOCKED — DO NOT MODIFY -->
+# JCIIOT 2026 Task Matrix and Common SOP
 
-# Standard Operating Procedure (SOP)
+Use this table as the authoritative natural-language-to-simulator mapping. It
+is synchronized with `knowledge/task_config.json` and the regenerated semantic
+maps from the official August 2026 release.
 
-Task ID: MT-MOBILE-001
-Version: v2.0
+| Level | Scene | Pick station | Source | Allowed object(s) | Place station | Target |
+|---|---|---|---|---|---|---|
+| L1 | FactorySorting1 | Pick Station 2 | `input_5` | `line_5_container_h01_near` or `line_5_container_h01_far` | Place Station 3 | `output_4` |
+| L2 | FactorySorting3 | Pick Station 1 | `input_6` | `green_tote_b01_upper` or `green_tote_b01_lower` | Place Station 3 | `output_4` |
+| L3 | FactorySorting5 | Pick Station 1 | `aux_input_1` | `blue_tote_b01_far_right` or `blue_tote_b01_near_right` | Place Station 2 | `output_5` |
+| L4 | FactorySorting7 | Pick Station 5 | `input_2` | `blue_container_h01_back_upper` or `blue_container_h01_back_lower` | Place Station 2 | `output_5` |
+| L5 | FactorySorting9 | Pick Station 6 | `input_1` | three distinct `white_tote_b01_left_*` objects | Place Station 1 | `aux_output_1` |
 
-## Standard Transport Workflow
+## Common execution contract
 
-1. Navigate to Pick Station
-2. Pick material: move arm above object -> close gripper -> lift 150mm -> confirm grasp
-3. Navigate to Place Station with object held
-4. Place material: lower to table height -> open gripper -> confirm deviation < 10mm
-5. Return or repeat
+For one object, emit exactly:
 
-## Task Coordinate Reference
+1. `move(target=<source>, object_name=<exact object>)`
+2. `pick_up(target=<source>, object_name=<exact object>)`
+3. `move(target=<target>, object_name=<same object>)`
+4. `place_down(target=<target>, object_name=<same object>)`
 
-All five levels, robot start at (13.5, 0.0):
+For L5, repeat the four-step cycle three times using back, center, and front
+objects exactly once each. Use exact semantic station names and exact object
+names; do not substitute legacy aliases.
 
-| Level | Scene             | Pick Station   | Pick Coords            | Object Name                                                                     | Place Station   | Place Coords            |
-| ----- | ----------------- | -------------- | ---------------------- | ------------------------------------------------------------------------------- | --------------- | ----------------------- |
-| L1    | factory_sorting_1 | Pick Station 2 | input_5 (7.19, 3.94)   | line_5_container_h01_near                                                       | Place Station 3 | output_4 (-0.17, -7.29) |
-| L2    | factory_sorting_3 | Pick Station 1 | input_6 (11.94, 3.93)  | green_tote_b01_upper                                                            | Place Station 3 | output_4 (-0.17, -7.29) |
-| L3    | factory_sorting_5 | Pick Station 1 | input_6 (11.94, 3.93)  | orange_tote_b01_upper                                                           | Place Station 2 | output_5 (4.87, -7.26)  |
-| L4    | factory_sorting_7 | Pick Station 5 | input_2 (-9.76, 5.01)  | blue_container_h01_back_upper                                                   | Place Station 2 | output_5 (4.87, -7.26)  |
-| L5    | factory_sorting_9 | Pick Station 6 | input_1 (-14.54, 5.01) | white_tote_b01_left_center; white_tote_b01_left_front; white_tote_b01_left_back | Place Station 1 | output_6 (10.03, -7.27) |
+## Safety and completion
 
-## CRITICAL pick_up Rules
-
-- pick_up requires BOTH `target` (station name like input_6) AND `object_name` (exact object name from the table above)
-- Never guess object names — always use the exact name from the per-level SOP Object Inventory
-
-## BC Policy Grasp Poses
-
-| Input Station | Grasp Pose (x, y, yaw) |
-| ------------- | ---------------------- |
-| input_1       | (5.03, -3.84, -3.14)   |
-| input_2       | (8.56, -3.92, -3.14)   |
-| input_3       | (12.38, -3.76, -3.14)  |
-| input_4       | (15.80, -3.77, -3.14)  |
-| input_5       | (8.00, 4.60, 3.14)     |
-| input_6       | (6.00, 4.80, 3.14)     |
+- Plan on the occupancy grid and maintain obstacle clearance.
+- Confirm grasp before transport and stable support after release.
+- Do not collide, drop, duplicate, or silently change the selected object.
+- August correction: L3 is not `input_6`/orange; L5 is not `output_6`.

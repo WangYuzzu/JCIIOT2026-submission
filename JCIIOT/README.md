@@ -1,5 +1,10 @@
 # Contestant Manual — Guide to Modifiable Files and Parameters
 
+> **Submission entry point:** see
+> [`team_submission/README.md`](team_submission/README.md) for the final model,
+> reproducibility commands, trajectory evidence, demonstrations, and technical
+> report synchronized with the official 9 August 2026 task update.
+
 ## Competition Introduction
 
 This competition is based on a VLA (Vision-Language-Action) embodied intelligence platform built with **MuJoCo + robosuite + robomimic**. Contestants need to control a Tiago mobile manipulator robot in FactorySorting simulation scenes to complete transport tasks: grasping materials from a specified input station and moving them to a specified output station.

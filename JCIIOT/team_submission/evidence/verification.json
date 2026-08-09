@@ -1,0 +1,159 @@
+{
+  "ok": true,
+  "checkpoint": "team_submission/models/jciiot_unified_l1_l5_bc_v4_epoch10_deploy.pth",
+  "checkpoint_sha256": "dd41174cdd1ed40d70f309024283326f0732de1aaeb0e3275b1573c13c824c5f",
+  "score": 100,
+  "max_score": 100,
+  "levels": [
+    {
+      "level": "L1",
+      "trajectory": "team_submission/evidence/L1/trajectory.json",
+      "frames": 303,
+      "successful_grasps": 1,
+      "collision_frames": 0,
+      "score": 10,
+      "max_score": 10,
+      "details": [
+        {
+          "object": "line_5_container_h01_near",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 0.018139,
+          "placed": true,
+          "final_position": [
+            -0.147962,
+            -7.291907,
+            1.017982
+          ]
+        }
+      ],
+      "issues": [],
+      "ok": true
+    },
+    {
+      "level": "L2",
+      "trajectory": "team_submission/evidence/L2/trajectory.json",
+      "frames": 344,
+      "successful_grasps": 1,
+      "collision_frames": 0,
+      "score": 15,
+      "max_score": 15,
+      "details": [
+        {
+          "object": "green_tote_b01_upper",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 0.049075,
+          "placed": true,
+          "final_position": [
+            -0.116966,
+            -7.291997,
+            1.292979
+          ]
+        }
+      ],
+      "issues": [],
+      "ok": true
+    },
+    {
+      "level": "L3",
+      "trajectory": "team_submission/evidence/L3/trajectory.json",
+      "frames": 279,
+      "successful_grasps": 1,
+      "collision_frames": 0,
+      "score": 20,
+      "max_score": 20,
+      "details": [
+        {
+          "object": "blue_tote_b01_far_right",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 4.7e-05,
+          "placed": true,
+          "final_position": [
+            4.871994,
+            -7.261047,
+            1.292978
+          ]
+        }
+      ],
+      "issues": [],
+      "ok": true
+    },
+    {
+      "level": "L4",
+      "trajectory": "team_submission/evidence/L4/trajectory.json",
+      "frames": 363,
+      "successful_grasps": 1,
+      "collision_frames": 0,
+      "score": 25,
+      "max_score": 25,
+      "details": [
+        {
+          "object": "blue_container_h01_back_upper",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 0.038471,
+          "placed": true,
+          "final_position": [
+            4.910157,
+            -7.265905,
+            1.321545
+          ]
+        }
+      ],
+      "issues": [],
+      "ok": true
+    },
+    {
+      "level": "L5",
+      "trajectory": "team_submission/evidence/L5/trajectory.json",
+      "frames": 974,
+      "successful_grasps": 3,
+      "collision_frames": 0,
+      "score": 30,
+      "max_score": 30,
+      "details": [
+        {
+          "object": "white_tote_b01_left_back",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 0.549995,
+          "placed": true,
+          "final_position": [
+            -0.405995,
+            8.473195,
+            1.099978
+          ]
+        },
+        {
+          "object": "white_tote_b01_left_center",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 0.262221,
+          "placed": true,
+          "final_position": [
+            0.323206,
+            8.664429,
+            1.099968
+          ]
+        },
+        {
+          "object": "white_tote_b01_left_front",
+          "grasped": true,
+          "left_source": true,
+          "target_distance_m": 0.63167,
+          "placed": true,
+          "final_position": [
+            0.771798,
+            8.403166,
+            1.099979
+          ]
+        }
+      ],
+      "issues": [],
+      "ok": true
+    }
+  ],
+  "problems": []
+}
