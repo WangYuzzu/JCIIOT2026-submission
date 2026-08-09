@@ -34,6 +34,7 @@ per-level result and limitations.
 ```text
 team_submission/
 ├── README.md
+├── VALIDATION.md                    # commands and clean-clone check record
 ├── TECHNICAL_REPORT.md              # comprehensive method and analysis
 ├── TECHNICAL_REPORT.pdf             # identical report for convenient review
 ├── verify_submission.py             # no MuJoCo/API required
