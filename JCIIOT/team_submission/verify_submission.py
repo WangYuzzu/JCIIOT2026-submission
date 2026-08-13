@@ -61,10 +61,17 @@ def left_source(frames: list[dict], name: str, source_xy: tuple[float, float], s
     return False
 
 
-def validate_schema(frames: list[dict]) -> list[str]:
+def validate_schema(trajectory: dict) -> list[str]:
     issues: list[str] = []
+    frames = trajectory.get("frames", [])
     if not frames:
         return ["trajectory has no frames"]
+    declared_objects = set(trajectory.get("object_names", []))
+    declared_joints = set(trajectory.get("joint_names", []))
+    if len(declared_joints) != 27:
+        issues.append(f"trajectory header: expected 27 joint names, got {len(declared_joints)}")
+    if not declared_objects:
+        issues.append("trajectory header: no movable object names")
     for index, frame in enumerate(frames):
         base = frame.get("base_pose", {})
         if len(base.get("position", [])) < 3 or len(base.get("orientation_xyzw", [])) < 4:
@@ -72,9 +79,18 @@ def validate_schema(frames: list[dict]) -> list[str]:
         joints = frame.get("joint_positions", {})
         if not isinstance(joints, dict) or len(joints) != 27:
             issues.append(f"frame {index}: expected 27 joint positions, got {len(joints) if isinstance(joints, dict) else 0}")
+        elif declared_joints and set(joints) != declared_joints:
+            issues.append(f"frame {index}: joint names differ from trajectory header")
         objects = frame.get("object_positions", {})
         if not isinstance(objects, dict) or not objects:
             issues.append(f"frame {index}: missing movable object positions")
+        elif declared_objects - set(objects):
+            issues.append(
+                f"frame {index}: missing declared movable objects "
+                f"{sorted(declared_objects - set(objects))}"
+            )
+        elif any(not isinstance(pose, list) or len(pose) != 7 for pose in objects.values()):
+            issues.append(f"frame {index}: movable object pose must be xyz+xyzw (7 values)")
         if len(issues) >= 20:
             issues.append("schema issue output truncated")
             break
@@ -83,12 +99,19 @@ def validate_schema(frames: list[dict]) -> list[str]:
 
 def score_one(record: dict) -> dict:
     path = (HERE / record["trajectory"]).resolve()
+    result_path = (HERE / record["result"]).resolve()
     trajectory = json.loads(path.read_text(encoding="utf-8"))
     frames = trajectory.get("frames", [])
     allowed = set(record["objects"])
     grasps = successful_grasps(trajectory, record["source"], allowed)
     collision_frames = sum(bool(frame.get("has_collision")) for frame in frames)
-    issues = validate_schema(frames)
+    issues = validate_schema(trajectory)
+    if sha256(path) != record.get("trajectory_sha256"):
+        issues.append("trajectory SHA-256 mismatch")
+    if not result_path.is_file():
+        issues.append("canonical result file is missing")
+    elif sha256(result_path) != record.get("result_sha256"):
+        issues.append("result SHA-256 mismatch")
     details = []
 
     if record["level"] == "L5":

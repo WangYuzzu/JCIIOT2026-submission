@@ -1,6 +1,8 @@
 # Submission validation record
 
-Validated on 2026-08-09 against official base commit `fa0eaef`.
+Validated on 2026-08-13 against official functional base commit `fa0eaef`.
+Official `master` at audit time was `01032e8`; the intervening commits only
+changed the root leaderboard README.
 
 | Check | Result |
 |---|---|
@@ -17,6 +19,9 @@ Validated on 2026-08-09 against official base commit `fa0eaef`.
 | Protected official-file diff against `fa0eaef` | empty |
 | Staged secret-pattern scan | no hits |
 | Fresh public clone with LFS smudge disabled | 100/100 PASS |
+| Current-tree Git LFS dependencies | none |
+| Canonical result portability | repository-relative paths |
+| GitHub Actions offline verification | configured |
 
 Primary offline command:
 

@@ -5,3 +5,10 @@ __pycache__/
 
 # Local BC collection and training scratch space (datasets are reproducible)
 JCIIOT/team_submission/training_work/
+JCIIOT/team_submission/training_artifacts/
+
+# Local execution outputs and credentials
+JCIIOT/recordings/
+JCIIOT/team_submission/.env
+.env
+.idea/

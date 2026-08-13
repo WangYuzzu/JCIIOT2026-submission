@@ -4,8 +4,8 @@
   "env_name": "FactorySorting3_3FO3ERRPH7X9",
   "status": "OK",
   "success": true,
-  "trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_232555_SUBMISSION_L2_OK.json",
-  "running_trajectory": "/home/reasoner/codex_project/JCIIOT2026-submission/JCIIOT/recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_232555_SUBMISSION_L2_RUNNING.json",
+  "trajectory": "team_submission/evidence/L2/trajectory.json",
+  "running_trajectory": null,
   "result": {
     "skill_name": "composed",
     "success": true,

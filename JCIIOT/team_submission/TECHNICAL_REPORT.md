@@ -1,7 +1,7 @@
 # JCIIOT 2026 移动操作机器人方案技术报告
 
-**提交版本：** 2026-08-09
-**基线：** 官方仓库提交 `fa0eaef`
+**提交版本：** 2026-08-13
+**功能基线：** 官方仓库提交 `fa0eaef`（后续 `01032e8` 仅更新排行榜 README）
 **范围：** L1–L5 轨迹生成、规划、双臂抓取、放置与可复现实验
 
 ## 摘要
@@ -204,6 +204,11 @@ python team_submission/verify_submission.py
 PYTHONPATH=src:. python team_submission/generate_demos.py
 ```
 
+从零再生成专家数据及训练阶段说明见
+[`team_submission/TRAINING.md`](TRAINING.md)。最终评测不要求下载官方样本
+HDF5、epoch-150 checkpoint 或 USD/mesh 压缩包；这些可选参考资源及来源见
+[`team_submission/ASSETS.md`](ASSETS.md)。
+
 checkpoint SHA-256：
 
 ```text
@@ -230,3 +235,4 @@ f8c7feb8047ad62f4e1e01f0e67886a0aa41f87781d486ae90e23164c37a7a5d
 - 本技术报告 Markdown/PDF；
 - 五关 GIF 演示；
 - 环境变量示例、资产说明和一键复现命令。
+- 训练数据 provenance、再生成命令和自动化离线验证 CI。

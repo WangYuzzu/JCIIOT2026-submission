@@ -40,7 +40,8 @@ team_submission/
 ├── verify_submission.py             # no MuJoCo/API required
 ├── run_all_levels.py                # full official execution runner
 ├── evidence/                        # canonical result/trajectory/score files
-├── demos/                           # GIF/MP4 demonstrations
+├── demos/                           # five GIF demonstrations
+├── TRAINING.md                      # data regeneration and training provenance
 ├── knowledge/                       # generated SOP Markdown + provenance
 └── models/
     └── jciiot_unified_task_heads_v16_deploy.pth
@@ -69,9 +70,10 @@ python -m pip install -e ./robosuite
 python -m pip install -e .
 ```
 
-Several optional official reference files are Git LFS pointers. They are not
-used by the final runtime path; organizer links and exact roles are listed in
-`ASSETS.md`. The submitted checkpoint itself is a normal Git blob.
+Large optional official reference files are deliberately absent from the
+submission tree. They are not used by the final runtime path; organizer links
+and exact roles are listed in `ASSETS.md`. The submitted checkpoint itself is
+a normal Git blob, and a normal clone requires no Git LFS download.
 
 The warnings about a private robosuite macro file and optional `mink` whole-
 body IK do not affect these Tiago task controllers. They can be removed by
@@ -153,6 +155,10 @@ finger contact and physical lift verification. No failed-grasp attachment
 recovery exists in the final runtime. All seven branches pass the same strict
 contact-and-lift evaluator, and all five final task trajectories have zero
 collision-marked frames.
+
+Exact data provenance, deterministic collection commands, the multi-stage
+training rationale, and the boundary between deployment reproducibility and
+from-scratch retraining are documented in [`TRAINING.md`](TRAINING.md).
 
 ## Integrity
 

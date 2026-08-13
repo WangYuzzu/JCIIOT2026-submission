@@ -1,14 +1,14 @@
 # External asset inventory
 
 The official repository represents several reference files as Git LFS
-pointers. They are not modified or redistributed by this submission, and none
-of them is required by the final runtime path: the submitted unified checkpoint
-is tracked directly in Git, the MuJoCo scene assets used by the five tasks are
-already present in the repository, and the official sample HDF5 is only a
-training-format example.
+objects. They are deliberately not redistributed in the submission tree, and
+none is required by the final runtime path: the submitted unified checkpoint
+is tracked directly in Git, the extracted MuJoCo assets used by the five tasks
+remain in the repository, and the official sample HDF5 is only a format
+example. This avoids an unnecessary roughly 1.1 GB LFS download for reviewers.
 
 If the evaluator wants the optional official reference files, use the organizer
-links below (or `git lfs pull` after the organizer restores its LFS quota):
+links below:
 
 | Optional official asset | Organizer URL / destination |
 |---|---|

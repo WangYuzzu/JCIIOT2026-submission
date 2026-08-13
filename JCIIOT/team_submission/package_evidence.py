@@ -88,6 +88,16 @@ def main() -> int:
         canonical_result = level_dir / "result.json"
         shutil.copy2(trajectory, canonical_trajectory)
         shutil.copy2(result, canonical_result)
+        # Canonical evidence must remain portable after cloning. Runtime result
+        # files contain machine-local absolute paths, so rewrite those two
+        # references without changing the execution payload.
+        result_data = json.loads(canonical_result.read_text(encoding="utf-8"))
+        result_data["trajectory"] = str(canonical_trajectory.relative_to(APP_ROOT))
+        result_data["running_trajectory"] = None
+        canonical_result.write_text(
+            json.dumps(result_data, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
         record = dict(item)
         record.update({

@@ -25,7 +25,7 @@
       "source_trajectory": "recordings/FactorySorting1_3FO3ERFHISEM/trajectory_20260809_232357_SUBMISSION_L1_OK.json",
       "trajectory_bytes": 692974,
       "trajectory_sha256": "ee6545dbd36383863c88d5ee7b4d2ce2975c48cba4878c00812750559efdbcc3",
-      "result_sha256": "a1eadb73b667ba18227a42610f6979c18d89e98272ffe5f1ee2a76b30c2bf6e2"
+      "result_sha256": "c7beec9f9b39fc72f5ef1e1bc65898098bebd7adb646eb0261c4d1d26e0f18a6"
     },
     {
       "level": "L2",
@@ -49,7 +49,7 @@
       "source_trajectory": "recordings/FactorySorting3_3FO3ERRPH7X9/trajectory_20260809_232555_SUBMISSION_L2_OK.json",
       "trajectory_bytes": 791685,
       "trajectory_sha256": "4f6ddbd18b935e4b90e3ce3a9cc2d9afa17b1c7822ce4c556c9871e2704a31fa",
-      "result_sha256": "a3e82313383d3beb95821edc63694440f895cd4fcaed7d9fd8c7321bf0efbabc"
+      "result_sha256": "c10bec300a537c22135ed02854a120b00c425cd031986e54a7ddeba6e08d79ae"
     },
     {
       "level": "L3",
@@ -74,7 +74,7 @@
       "source_trajectory": "recordings/FactorySorting5_3FO3ERTPXEUT/trajectory_20260809_232111_SUBMISSION_L3_OK.json",
       "trajectory_bytes": 1139258,
       "trajectory_sha256": "5e419dd4f02993c685d88fda9f1b9083215ac357a1ff972194040b8258db921c",
-      "result_sha256": "c6f915a4fc221a28c4810e00ca7c98ed0df7f0590f602523296a4526eb10069d"
+      "result_sha256": "f26df44429fd4c848a996f5def83da0b0d113bd4ebcb01b1847cfb22fa201dae"
     },
     {
       "level": "L4",
@@ -98,7 +98,7 @@
       "source_trajectory": "recordings/FactorySorting7_3FO3ERFKY9RN/trajectory_20260809_232802_SUBMISSION_L4_OK.json",
       "trajectory_bytes": 1362526,
       "trajectory_sha256": "634b081495aa74d48be1c4c025470d7ed1f90805f6d529962877554ad9719b0e",
-      "result_sha256": "dc9bad600a09da12b5dff7631605e5262b46b341711ce44326a258a383d22d18"
+      "result_sha256": "49dae9ffd1294e4481b6c0b64596b62b64bb5d46867c9c3e0410f388087ae3cc"
     },
     {
       "level": "L5",
@@ -124,7 +124,7 @@
       "source_trajectory": "recordings/FactorySorting9_3FO3ERT2C5FP/trajectory_20260809_233054_SUBMISSION_L5_OK.json",
       "trajectory_bytes": 3413958,
       "trajectory_sha256": "c7ab228c25b59e68ffe4b94a58e27b74a69f6bd57b34a08bdc294f917d466c7e",
-      "result_sha256": "1928ddbf8bf0e7d20b0ec19607ad46dfacf6452936db2f326c11017bf15a5c91"
+      "result_sha256": "03d842a3e1c495695c9813135b03bab90ae9b38eb79e34af9f75185703d5102e"
     }
   ]
 }

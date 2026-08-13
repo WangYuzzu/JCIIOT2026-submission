@@ -1,44 +1,91 @@
-## Notice
-An erratum for the  SOP materials is available in [ERRATUM.md](./ERRATUM.md). Please refer to it for the latest corrections and clarifications.
+# JCIIOT 2026 Industrial Embodied AI Submission
 
-## Repository Structure and Leaderboard
+本仓库是 JCIIOT 2026 工业具身智能挑战赛的完整可复现提交。方案将
+**SOP 知识生成、受约束 LLM 规划、A\* 安全导航、统一多任务 Transformer
+行为克隆（BC）、物理接触/抬升校验和轨迹审计**组合为一套可解释的移动操作系统。
 
-- The **Competition Description** section contains the problem statement and task description for this competition.
+## 最终结果
 
-- The **JCIIOT** folder contains the related code.
+| 关卡 | 得分 | 轨迹帧 | 碰撞帧 | 抓取 |
+|---|---:|---:|---:|---|
+| L1 | 10/10 | 304 | 0 | BC 接触并抬升 |
+| L2 | 15/15 | 344 | 0 | BC 接触并抬升 |
+| L3 | 20/20 | 360 | 0 | BC 接触并抬升 |
+| L4 | 25/25 | 367 | 0 | BC 接触并抬升 |
+| L5 | 30/30 | 974 | 0 | 三次 BC 接触并抬升 |
+| **合计** | **100/100** | **2,349** | **0** | **7/7 分支通过** |
 
+每一帧均记录机器人底盘位姿、27 个关节角和可移动物体的 7 维位姿。最终
+checkpoint 是一个 12.9 MB 的普通 Git 文件，不依赖 Git LFS。
 
+## 三步复现
 
+```bash
+git clone https://github.com/WangYuzzu/JCIIOT2026-submission.git
+cd JCIIOT2026-submission/JCIIOT
 
----
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m pip install -e ./robomimic -e ./robosuite -e .
 
-## Leaderboard
+python team_submission/verify_submission.py
+```
 
+期望最后一行为：
 
+```text
+TOTAL: 100/100 PASS
+```
 
-> **Disclaimer:** All scores listed below are self-reported by participants, include only subjective evaluation scores, and do not include objective evaluation scores. They are shown for reference only and have not been officially verified or reproduced.
+离线验证不启动 MuJoCo，也不需要 API。正式仿真和 Streamlit 复现步骤见
+[提交说明](JCIIOT/team_submission/README.md)。API key 只通过环境变量提供，
+仓库不包含任何密钥。
 
-| Rank | Participant / Team | Score   | Date       | Method Summary | Code / Repository | Evidence |
-|------|--------------------|---------|------------|----------------|-------------------|----------|
-| 1    | wpironman          | 100/100 | 2026-08-06 | N/A  | N/A | N/A      |
-| 1    | SOP-MapGuard       | 100/100 | 2026-08-04 | N/A  | N/A | N/A      |
-| 1    | BIPT-EDU           | 100/100 | 2026-08-03 | N/A  | N/A | N/A      |
-| 1    | 一头二臂               | 100/100 | 2026-08-03 | N/A  | N/A | N/A      |
-| 2    | 周春光                | 80/100  | 2026-08-07 | N/A  | N/A | N/A      |
+## 方法概览
 
+```text
+DOCX SOP + task config + semantic map
+                  │
+                  ▼
+       可追溯知识 Markdown + 事实校验
+                  │
+                  ▼
+        LLM 结构化计划（受限 JSON）
+             ┌────┴────┐
+             ▼         ▼
+       A* 底盘导航   统一 Transformer BC
+             └────┬────┘
+                  ▼
+       接触 / 抬升 / 碰撞 / 目标审计
+                  ▼
+       result + trajectory + GIF + score
+```
 
----
+主要创新点：
 
-## How to Submit to the Leaderboard
+1. 将 SOP 文本、官方任务配置和实时场景语义图组成带 provenance 的知识闭环；
+2. 使用一个共享 Transformer 主干和七个轻量任务动作头，在单 checkpoint 中覆盖五关；
+3. BC 抓取必须通过双侧指垫接触和真实抬升，之后才允许使用官方运输 attachment；
+4. 将“训练成功、执行成功、评分成功”分别审计，避免仅凭 `success=true` 误判。
 
-Please open a GitHub issue using the **Leaderboard Submission** template and include:
+## 提交材料入口
 
-- Name 
-- Team Name (optional)
-- Current Score
-- Date
-- Method Summary (optional)
-- Key Idea / Innovation (optional)
-- Result Evidence
-- Repository / Code Link (optional)
-- Additional Notes
+- [完整技术报告（Markdown）](JCIIOT/team_submission/TECHNICAL_REPORT.md)
+- [完整技术报告（PDF）](JCIIOT/team_submission/TECHNICAL_REPORT.pdf)
+- [复现与验证记录](JCIIOT/team_submission/VALIDATION.md)
+- [训练与数据再生成说明](JCIIOT/team_submission/TRAINING.md)
+- [五关轨迹和机器可读评分](JCIIOT/team_submission/evidence/)
+- [五关 GIF 演示](JCIIOT/team_submission/demos/)
+- [统一 BC checkpoint](JCIIOT/team_submission/models/jciiot_unified_task_heads_v16_deploy.pth)
+- [外部参考资产说明](JCIIOT/team_submission/ASSETS.md)
+
+## 合规说明
+
+方案基于官方功能提交 `fa0eaef`。官方后续 `01032e8` 仅更新排行榜 README，
+没有改变评分、场景或接口。赛事禁止修改的 `app.py`、`src/robot_agent/core/`、
+`src/robot_agent/environments/` 和 `knowledge/task_config.json` 均与功能基线一致。
+参赛者改动范围和第三方项目引用详见技术报告。
+
+许可证继承自官方项目，见 [LICENSE](JCIIOT/LICENSE)。

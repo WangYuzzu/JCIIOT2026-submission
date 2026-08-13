@@ -1,0 +1,25 @@
+name: submission-verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  offline-verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Verify checkpoint, trajectories and score
+        working-directory: JCIIOT
+        run: python team_submission/verify_submission.py
+      - name: Compile contestant entry points
+        working-directory: JCIIOT
+        run: |
+          python -m py_compile \
+            team_submission/verify_submission.py \
+            team_submission/run_all_levels.py \
+            team_submission/package_evidence.py \
+            src/robot_agent/task_subprocess_runner.py
