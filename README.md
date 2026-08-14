@@ -43,6 +43,20 @@ TOTAL: 100/100 PASS
 [提交说明](JCIIOT/team_submission/README.md)。API key 只通过环境变量提供，
 仓库不包含任何密钥。
 
+## 模型与 API
+
+| 角色 | 模型 / 资产 | 用途 |
+|---|---|---|
+| 文本规划 LLM | 智谱 `glm-5.2` | 将任务和 SOP 上下文转换为受限 JSON 动作计划 |
+| 视觉模型 VLM | 智谱 `glm-5v-turbo` | 仅用于离线解析 SOP 文档中的图片 |
+| 连续控制策略 | `jciiot_unified_task_heads_v16_deploy.pth` | 执行七种双臂近场抓取条件 |
+
+LLM 和 VLM 均通过智谱开放平台的 OpenAI-compatible endpoint
+`https://open.bigmodel.cn/api/paas/v4` 调用。界面中的 **OpenAI API** 表示接口
+兼容模式，并不表示使用了 OpenAI 模型。正式报告轨迹使用 `glm-5.2`，规划
+temperature 为 `0.1`；VLM 不参与最终轨迹验证和离线回放。完整变量示例见
+[`team_submission/.env.example`](JCIIOT/team_submission/.env.example)。
+
 ## 方法概览
 
 ```text
