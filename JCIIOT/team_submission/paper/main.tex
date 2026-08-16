@@ -108,41 +108,7 @@ We do not claim a new Transformer, BC algorithm, or graph search method. The nov
 
 \begin{figure*}[t]
 \centering
-\resizebox{0.96\textwidth}{!}{%
-\begin{tikzpicture}[node distance=7mm and 9mm]
-  \node[source] (sop) {DOCX SOP\\text, tables, images};
-  \node[source,right=of sop] (prompt) {Natural-language\\task request};
-  \node[source,right=of prompt] (cfg) {Official\\task configuration};
-  \node[source,right=of cfg] (map) {Semantic map +\\occupancy grid};
-
-  \node[offline,below=10mm of $(prompt)!0.5!(cfg)$] (ground) {Grounded knowledge builder\\GLM-5V image description + deterministic fact overlay};
-  \node[runtime,below=9mm of ground] (planner) {GLM-5.2 symbolic planner\\\{move, pick\_up, place\_down\}};
-  \node[verify,below=8mm of planner] (guard) {Normalization + runtime binding\\skills, exact objects, errata};
-  \node[control,below left=9mm and 12mm of guard] (nav) {Inflated-grid A*\\safe base approach / retreat};
-  \node[control,below right=9mm and 12mm of guard] (bc) {Unified Transformer BC\\7 task-conditioned grasp heads};
-  \node[verify,below=8mm of bc] (physics) {Physical grasp gate\\bilateral contact + $\Delta z \geq 0.12$\,m};
-  \node[runtime,below=13mm of guard] (exec) {Execution state machine\\transport hold + collision-safe placement slots};
-  \node[offline,below=9mm of exec] (audit) {Canonical evidence\\base + 27 joints + object poses + events + score};
-
-  \draw[dataflow] (sop) -- (ground);
-  \draw[dataflow] (cfg) -- (ground);
-  \draw[dataflow] (map) -- (ground);
-  \draw[flow] (prompt) |- (planner);
-  \draw[flow] (ground) -- (planner);
-  \draw[flow] (planner) -- (guard);
-  \draw[flow] (guard) -- node[above left,font=\scriptsize]{move} (nav);
-  \draw[flow] (guard) -- node[above right,font=\scriptsize]{pick} (bc);
-  \draw[flow] (nav) -- (exec);
-  \draw[flow] (bc) -- (physics);
-  \draw[flow] (physics) -- (exec);
-  \draw[flow] (exec) -- (audit);
-  \draw[dataflow] (map) |- (nav);
-
-  \begin{scope}[on background layer]
-    \node[fit=(sop)(map)(ground),draw=teal!45,dashed,rounded corners=4pt,inner sep=4mm,label={[font=\small\bfseries\color{teal}]above:offline knowledge preparation}] {};
-    \node[fit=(planner)(guard)(nav)(bc)(physics)(exec)(audit),draw=blue!35,dashed,rounded corners=4pt,inner sep=4mm,label={[font=\small\bfseries\color{blue}]right:auditable runtime}] {};
-  \end{scope}
-\end{tikzpicture}}
+\includegraphics[width=0.98\textwidth]{figures/generated/system_overview_imagegen_v2.png}
 \caption{System overview. Language models are restricted to knowledge extraction and symbolic planning; deterministic guards bind plans to official scene identities. Continuous grasping is delegated to BC, while physical measurements decide whether execution may transition to transport. Every cross-module decision is serialized into the trajectory evidence.}
 \label{fig:overview}
 \end{figure*}
@@ -193,23 +159,7 @@ The deploy artifact is one checkpoint, not a bundle of seven independent network
 
 \begin{figure}[t]
 \centering
-\resizebox{\columnwidth}{!}{%
-\begin{tikzpicture}[node distance=5mm]
-  \node[source,minimum width=20mm] (state) {EEF poses\\gripper states};
-  \node[source,minimum width=20mm,right=4mm of state] (time) {timestep\\$t$};
-  \node[source,minimum width=20mm,right=4mm of time] (task) {task ID\\$\mathbf{e}_k\in\mathbb{R}^7$};
-  \node[runtime,below=7mm of time,minimum width=72mm] (embed) {Low-dimensional feature embedding};
-  \node[runtime,below=5mm of embed,minimum width=72mm] (trunk) {Shared 4-layer Transformer, $d=256$, 8 heads\\3.17M shared parameters};
-  \node[control,below=5mm of trunk,minimum width=72mm] (heads) {Selected task action head\\L1, L2, L3, L4, L5-back / center / front};
-  \node[verify,below=5mm of heads,minimum width=72mm] (action) {20-D bimanual action $\mathbf{a}_t$};
-  \draw[flow] (state) -- (embed);
-  \draw[flow] (time) -- (embed);
-  \draw[flow] (task) -- (embed);
-  \draw[flow] (embed) -- (trunk);
-  \draw[flow] (trunk) -- (heads);
-  \draw[flow] (task) |- (heads);
-  \draw[flow] (heads) -- (action);
-\end{tikzpicture}}
+\includegraphics[width=\columnwidth]{figures/generated/unified_bc_imagegen_v1.png}
 \caption{One deploy checkpoint shares temporal representation while isolating conflicting action mappings with seven lightweight heads. Task identity conditions both the input and head selection.}
 \label{fig:bc}
 \end{figure}

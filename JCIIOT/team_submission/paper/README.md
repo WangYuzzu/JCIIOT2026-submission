@@ -11,8 +11,11 @@ python plot_trajectories.py
 ```
 
 For Overleaf, upload this directory, select `main.tex`, and use XeLaTeX. The
-pre-generated vector figure is included, so Overleaf does not need Python.
-Alternatively, compile locally with Tectonic:
+pre-generated trajectory vector figure and two image-generated architecture
+figures are included, so Overleaf does not need Python or an image API. Their
+generation prompts and semantic review are recorded in
+[`IMAGEGEN_FIGURES.md`](IMAGEGEN_FIGURES.md). Alternatively, compile locally
+with Tectonic:
 
 ```bash
 tectonic main.tex
