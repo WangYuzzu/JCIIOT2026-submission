@@ -88,6 +88,9 @@ DOCX SOP + task config + semantic map
 
 - [完整技术报告（Markdown）](JCIIOT/team_submission/TECHNICAL_REPORT.md)
 - [完整技术报告（PDF）](JCIIOT/team_submission/TECHNICAL_REPORT.pdf)
+- [英文论文版技术报告（PDF）](JCIIOT/team_submission/TECHNICAL_REPORT_EN.pdf)
+- [英文论文 LaTeX / Overleaf 源码](JCIIOT/team_submission/paper/)
+- [LLM/VLM Prompt 设计与输入构成](JCIIOT/team_submission/PROMPT_DESIGN.md)
 - [复现与验证记录](JCIIOT/team_submission/VALIDATION.md)
 - [训练与数据再生成说明](JCIIOT/team_submission/TRAINING.md)
 - [五关轨迹和机器可读评分](JCIIOT/team_submission/evidence/)

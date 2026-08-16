@@ -26,8 +26,10 @@ python team_submission/verify_submission.py
 
 The verifier checks the model SHA-256, five trajectory schemas, successful
 grasp events, source departure, final target distance, collision flags, and
-the public `app.py` score conditions. See `TECHNICAL_REPORT.md` for the
-per-level result and limitations.
+the public `app.py` score conditions. See `TECHNICAL_REPORT.md` or the concise
+English paper `TECHNICAL_REPORT_EN.pdf` for per-level results and limitations;
+the exact two-stage LLM input construction is documented in
+[`PROMPT_DESIGN.md`](PROMPT_DESIGN.md).
 
 ## Repository layout
 
@@ -37,6 +39,9 @@ team_submission/
 ├── VALIDATION.md                    # commands and clean-clone check record
 ├── TECHNICAL_REPORT.md              # comprehensive method and analysis
 ├── TECHNICAL_REPORT.pdf             # identical report for convenient review
+├── TECHNICAL_REPORT_EN.pdf          # four-page English conference-style report
+├── PROMPT_DESIGN.md                 # exact LLM/VLM prompts and runtime context
+├── paper/                            # editable LaTeX, BibTeX, and vector figures
 ├── verify_submission.py             # no MuJoCo/API required
 ├── run_all_levels.py                # full official execution runner
 ├── evidence/                        # canonical result/trajectory/score files
@@ -137,6 +142,14 @@ The August correction is explicit: L3 uses `aux_input_1` and a blue tote;
 L5 uses `aux_output_1`. The runtime also contains a narrow correction guard so
 an obsolete alias emitted by a language model cannot silently send the robot
 to the old station.
+
+Prompt provenance matters: the online planner template under
+`src/robot_agent/core/` is inherited unchanged from the official baseline.
+Our contribution is the offline DOCX/VLM/text synthesis workflow, deterministic
+critical-fact header, provenance manifest, live object binding, and narrow
+errata guards. The precise assembly order, context budgets, API payload,
+sanitized examples, and current limitations are recorded in
+[`PROMPT_DESIGN.md`](PROMPT_DESIGN.md).
 
 ## Retrain the unified BC checkpoint
 

@@ -53,25 +53,41 @@ DOCX SOP + task prompt + task_config + semantic map
 
 ## 3. LLM 与 SOP 知识生成
 
-### 3.1 给 LLM 的上下文如何构成
+### 3.1 Prompt 的归属与两阶段结构
 
-规划上下文由四类信息合并：任务原始文本、当前关卡配置、场景动态物体映射、知识库 Markdown。L1 的基础知识还包含 `command_examples.md`、`pick_operation.md`、`place_operation.md` 和 `constraints.md`；它们由 `read_document.py` 读取并注入规划提示。执行子进程初始化仿真后读取当前场景的真实物体名/语义端口，再由官方 `task_config.json` 限定允许对象、数量和源/目标，避免仅凭 DOCX 可见标签猜内部端口。
+本方案严格区分两类调用。第一阶段是参赛者新增的离线知识生成：`generate_sop_knowledge.py` 将官方 DOCX 转成可追溯 Markdown。第二阶段是在线规划：官方 `src/robot_agent/core/planner.py` 将当前任务和知识上下文转成 JSON 技能计划；该在线模板与官方功能基线 `fa0eaef` 一致，本文不把它本身描述成参赛者发明。我们的增量是 DOCX 证据管线、确定性的关键事实头、来源哈希、动态物体名绑定，以及针对 8 月勘误的窄范围执行修正。
 
-### 3.2 DOCX → Markdown
+### 3.2 第一阶段：DOCX → Markdown
 
-`generate_sop_knowledge.py` 读取五份 DOCX 的段落、表格和内嵌图片；图片由 VLM 描述，文本模型将证据整理成可执行 SOP。随后程序把官方任务配置与语义地图解析出的事实覆盖到单独的“Planner-Critical Facts”区，并执行以下一致性检查：
+生成器读取五份 DOCX 的段落、表格和去重后的内嵌图片，并记录源文件 SHA-256。图片使用一条刻意限制推断的 VLM 指令：只客观描述可见布局、工位、主要物体和清晰标签，不猜测不可见事实。随后文本模型接收 DOCX 文本、VLM 观察和只读的执行事实，按九项约束生成原创 Markdown：保留物料/工位/数量，写出精确内部端口与对象名，只使用 `move / pick_up / place_down`，多物体逐一完成四步循环，并明确 attachment 只能发生在 BC 抓取和抬升验证之后。
 
-1. 源端口、目标端口必须在当前语义图存在；
-2. 物体必须属于官方允许列表；
-3. 数量大于 1 时，每个物体都必须有完整的四步循环；
-4. `pick_up` 与 `place_down` 必须沿用同一精确物体名；
-5. 旧版别名不得进入最终计划。
+模型生成结束后，程序以确定性代码在文件顶部添加“Planner-Critical Facts”；该区不是由模型自由改写，包含关卡、数量、精确源/目标、允许对象、四步循环、模型名和源哈希。生成物及完整 provenance 记录在 `team_submission/knowledge/generated_sop_manifest.json`。8 月勘误后，L3 明确为 `aux_input_1 → output_5` 的蓝色箱，L5 为 `input_1 → aux_output_1` 的三个白边箱。
 
-生成物、DOCX SHA-256、模型名称和执行事实记录在 `team_submission/knowledge/generated_sop_manifest.json`。8 月勘误后，L3 明确改为 `aux_input_1 → output_5` 的蓝色箱，L5 改为 `input_1 → aux_output_1` 的三个白边箱。
+### 3.3 第二阶段：在线 Prompt 如何拼装
 
-### 3.3 规划约束与容错
+在线规划器把下列内容按固定顺序合成**一条 user message**：
 
-LLM 输出限定为 JSON schema，动作集合只有 `move`、`pick_up`、`place_down`。运行时会规范化模型偶尔产生的可读工位名，并用官方配置做最终守卫；多物体任务保留对象列表，不再在子进程边界意外压缩成一个标量。所用文本模型是 OpenAI-compatible 接口上的 `glm-5.2`；API key 仅通过环境变量传入，从未写入仓库。视觉模型只用于重新生成 SOP 图片描述，不参与最终轨迹回放或离线评分。
+| Prompt 区块 | 来源与实际边界 |
+|---|---|
+| 角色与技能接口 | 固定模板；列出注册技能和各自 `inputs` 结构 |
+| 官方知识 | `knowledge/*.md`，总计最多 4,000 字符，每个文档最多 600 字符，完整 `sop_main.md` 排除 |
+| 当前关卡坐标行 | 从 `sop_main.md` 只追加当前 L1–L5 的一行 |
+| 团队知识 | `team_submission/knowledge/*.md`，独立的 4,000 字符上限 |
+| 当前场景对象映射 | 仿真 reset 后由 `material_metadata` 动态读取，再以当前任务配置的对象列表覆盖/补充 |
+| Few-shot 与硬规则 | 一套四步 JSON 示例；精确对象名、300 s、零重试、完整循环 |
+| 当前任务 | UI 中当前关卡的原始任务文本，置于末尾 |
+
+`command_examples.md`、`pick_operation.md`、`place_operation.md` 和 `constraints.md` 是普通官方知识文档，由 `KnowledgeManager` 对**所有关卡**加载并受 4,000 字符预算约束；它们不是由 `read_document.py` 专门注入，也不是 L1 独享。完整 `task_config.json` 和整张语义地图不会原样进入在线 Prompt：前者用于离线事实生成与运行时补充，后者由 A* 导航直接消费。当前关卡的一行坐标和实时对象映射被单独追加，因此即使知识块截断，最关键的源、目标和对象身份仍保持高显著性。
+
+### 3.4 API 参数、结构化输出与容错
+
+正式规划使用智谱 OpenAI-compatible 接口上的 `glm-5.2`：temperature 0.1、`max_tokens=4096`、非流式，优先请求 `response_format={"type":"json_object"}`，并设置 `thinking={"type":"disabled"}`。关闭 thinking 的目的只是让接口返回可审计的最终 JSON，而非声称模型没有推理能力。若服务端不支持 JSON mode，客户端会改用普通模式；解析依次尝试直接 JSON、围栏/引号/尾逗号修复、对象截取以及最多两次“只输出合法 JSON”的提示重试。
+
+输出动作限定为 `move`、`pick_up`、`place_down`。`normalize_planner_output()` 会规范化 JSON 外壳并校验技能名是否在 registry；缺失的对象名可由实时映射补全，L3/L5 的旧别名在执行层做窄范围勘误修正，L5 还维护 back/center/front 的剩余对象顺序。需要准确说明的是：当前 schema 校验**不会**在执行前形式化证明每一个源、目标、对象和数量字段都合法。最终可靠性来自冗余 Prompt 证据、动态绑定、执行时修正、物理接触/抬升门槛和评分审计的组合，而不是一个全能的符号验证器。
+
+### 3.5 已知限制与可复现材料
+
+当前知识加载是定长汇总而非按关卡检索，截断前可能出现其他关卡片段；启用知识库时，`SceneContext` 的全文摘要也没有被插入 Prompt。任务专属检索和完整 schema 语义校验是合理的后续优化，但不作为本次 100/100 的既有能力宣称。完整 Prompt 模板、净化后的 L3/L5 示例、API payload、解析顺序和代码位置见 [`team_submission/PROMPT_DESIGN.md`](PROMPT_DESIGN.md)。API key 只通过环境变量或 UI 输入，仓库不含密钥；VLM 只用于离线生成图片描述，不参与最终轨迹回放与评分。
 
 ## 4. 导航、抓取与放置
 
